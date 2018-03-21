@@ -7,6 +7,8 @@ import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector3
 
 /**
  * Created by Oleg on 11.03.2018.
@@ -16,14 +18,17 @@ class OptionScreen(internal val game: MainActivity) : Screen, InputProcessor {
     internal var camera: OrthographicCamera
     internal var width = 720
     internal var height = 1200
-    internal var textWall: Texture
+    internal lateinit var textWall: Texture
+    internal lateinit var textBackButton: Texture
+    internal lateinit var rectBackButton : Rectangle
 
     init {
         /*заглушка, просто показывает картинку*/
         camera = OrthographicCamera()
         camera.setToOrtho(false, width.toFloat(), height.toFloat())
 
-        textWall = Texture("options.png")
+       loadTextures()
+        createRectangles()
 
     }
 
@@ -32,22 +37,39 @@ class OptionScreen(internal val game: MainActivity) : Screen, InputProcessor {
     }
 
     override fun render(delta: Float) {
-        Gdx.input.setInputProcessor(this);
-        Gdx.input.setCatchBackKey(true);
         Gdx.gl.glClearColor(247f, 247f, 245f, 0f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         game.batch.begin()
         game.batch.draw(textWall, 0f, 0f, width.toFloat(), height.toFloat())
+        game.batch.draw(textBackButton, rectBackButton.x, rectBackButton.y, rectBackButton.width, rectBackButton.height)
         game.batch.end()
-
+        control()
         camera.update()
     }
 
-    override fun keyDown(keycode: Int): Boolean {
-        if(keycode == Input.Keys.BACK){
-            game.screen = MainMenuScreen(game)
+    fun loadTextures(){
+        textWall = Texture("options.png")
+        textBackButton = Texture("back-icon.png")
+    }
+
+    fun createRectangles(){
+        rectBackButton = Rectangle(100f, height - 100f, 100f, 100f)
+    }
+
+    fun control(){ //написана отдельная функция для управления, чтобы кнопка реагировала даже в случае, когда пользователь не отпускает палец
+        var SPEED = 5f;
+        if(Gdx.input.isTouched(0)) {
+            val touchPos = Vector3()
+            touchPos.set(Gdx.input.getX(0).toFloat(), Gdx.input.getY(0).toFloat(), 0f)
+            camera.unproject(touchPos) //важная функция для того, чтобы подгонять координаты приложения в разных телефонах
+            if (rectBackButton.contains(touchPos.x, touchPos.y)) {
+                game.screen = MainMenuScreen(game)
+            }
         }
+    }
+
+    override fun keyDown(keycode: Int): Boolean {
         return false;
     }
 
