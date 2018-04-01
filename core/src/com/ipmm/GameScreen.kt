@@ -19,6 +19,7 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
     internal var camera: OrthographicCamera
     internal var width = 720
     internal var height = 1200
+
     internal lateinit var textWall: Texture
     internal lateinit var textUpSticker: Texture
     internal lateinit var textLeftSticker: Texture
@@ -26,6 +27,8 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
     internal lateinit var textDownSticker: Texture
     internal lateinit var textGiraffeHead : Texture
     internal lateinit var textBackButton: Texture
+    internal lateinit var textApple: Texture
+
     internal lateinit var rectUpSticker: Rectangle
     internal lateinit var rectLeftSticker: Rectangle
     internal lateinit var rectRightSticker: Rectangle
@@ -33,12 +36,17 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
     internal lateinit var rectGiraffeHead : Rectangle
     internal lateinit var rectBackButton : Rectangle
 
+    internal var points: Int = 0
+
+    val apples: Array<Array<Int>> = Array(10, { Array(10, {0}) }) //временный массив яблок
 
 
     init {
         camera = OrthographicCamera()
         camera.setToOrtho(false, width.toFloat(), height.toFloat())
 
+        apples[0][5] = 1 //положим одно яблоко
+        apples[4][5] = 1 //еще одно для проверки
         loadTextures()
         createRectangles()
 
@@ -52,13 +60,14 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
         textDownSticker = Texture("downsticker.png")
         textGiraffeHead = Texture("giraffe.png")
         textBackButton = Texture("back-icon.png")
+        textApple = Texture("apple.png")
     }
 
     fun createRectangles(){
-        rectUpSticker = Rectangle(510f, 200f, 100f, 100f)
-        rectLeftSticker = Rectangle(410f, 100f, 100f, 100f)
-        rectRightSticker = Rectangle(610f, 100f, 100f, 100f)
-        rectDownSticker = Rectangle(510f, 0f, 100f, 100f)
+        rectUpSticker = Rectangle(510f, 150f, 100f, 100f)
+        rectLeftSticker = Rectangle(460f, 100f, 100f, 100f)
+        rectRightSticker = Rectangle(560f, 100f, 100f, 100f)
+        rectDownSticker = Rectangle(510f, 50f, 100f, 100f)
         rectGiraffeHead = Rectangle(0f, 0f, 100f, 100f)
         rectBackButton = Rectangle(100f, height - 100f, 100f, 100f)
     }
@@ -79,8 +88,12 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
         game.batch.draw(textDownSticker, rectDownSticker.x, rectDownSticker.y, rectDownSticker.width, rectDownSticker.height)
         game.batch.draw(textGiraffeHead, rectGiraffeHead.x, rectGiraffeHead.y, rectGiraffeHead.width, rectGiraffeHead.height)
         game.batch.draw(textBackButton, rectBackButton.x, rectBackButton.y, rectBackButton.width, rectBackButton.height)
+        game.font.getData().setScale(2f, 2f);
+        game.font.draw(game.batch, points.toString(), 620f, 1100f);
+        drawBonuses()
         game.batch.end()
-        control();
+        control()
+        pickup()
         camera.update()
 
 
@@ -117,6 +130,42 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
             if (rectBackButton.contains(touchPos.x, touchPos.y)) {
                 game.screen = MainMenuScreen(game)
             }
+        }
+    }
+
+    fun drawBonuses(){
+        var SIZE_APPLE = 100f
+        var r = 0
+        var c = 0
+        for(row in apples){
+            c = 0
+            for(cell in row){
+                if(apples[r][c] == 1){
+                    game.batch.draw(textApple, r * SIZE_APPLE, c * SIZE_APPLE, SIZE_APPLE, SIZE_APPLE)
+                }
+                c++
+            }
+            r++
+        }
+    }
+
+    fun pickup(){
+        var r = 0
+        var c = 0
+        for(row in apples){
+            c = 0
+            for(cell in row){
+                if(cell == 1){
+                    val touchPos = Vector3()
+                    touchPos.set(r * 100f + 50f, c * 100f + 50f, 0f)
+                    if (rectGiraffeHead.contains(touchPos.x, touchPos.y)){
+                        apples[r][c] = 0
+                        points++
+                    }
+                }
+                c++
+            }
+            r++
         }
     }
 
