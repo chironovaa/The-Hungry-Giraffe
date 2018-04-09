@@ -1,6 +1,6 @@
 package com.ipmm
 
-import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Gdx.*
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.Screen
@@ -20,9 +20,11 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
     internal var camera: OrthographicCamera
     internal var texButtonStart: Texture
     internal var texButtonOption: Texture
+    internal var texButtonAbout: Texture
     internal var texLogo: Texture
     internal var startRect: Rectangle
     internal var optionRect: Rectangle
+    internal var aboutRect: Rectangle
     internal var logoRect: Rectangle
     internal var width = 720
     internal var height = 1200
@@ -35,17 +37,19 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
 
         texButtonStart = Texture("play-icon.png")
         texButtonOption = Texture("option-icon.png")
+        texButtonAbout = Texture("about-icon.png")
         texLogo = Texture("logo.png")
         startRect = Rectangle(36f, 406f, 200f, 200f)
         optionRect = Rectangle(500f, 406f, 200f, 200f)
+        aboutRect = Rectangle(275f, 250f, 200f, 200f)
         logoRect = Rectangle(104f, 500f, 512f, 512f)
     }
 
     override fun render(delta: Float) {
-        Gdx.input.setInputProcessor(this); //нужно для работы кнопок телефона. например, кнопки назад.
-        Gdx.input.setCatchBackKey(true);
-        Gdx.gl.glClearColor(247f, 247f, 245f, 0f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        input.setInputProcessor(this); //нужно для работы кнопок телефона. например, кнопки назад.
+        input.setCatchBackKey(true);
+        gl.glClearColor(247f, 247f, 245f, 0f)
+        gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         camera.update()
         game.batch.projectionMatrix = camera.combined
@@ -55,13 +59,14 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
         game.batch.draw(texLogo, logoRect.x, logoRect.y, logoRect.width, logoRect.height)
         game.batch.draw(texButtonStart, startRect.x, startRect.y, startRect.width, startRect.height)
         game.batch.draw(texButtonOption, optionRect.x, optionRect.y, optionRect.width, optionRect.height)
+        game.batch.draw(texButtonAbout, aboutRect.x, aboutRect.y, aboutRect.width, aboutRect.height)
         game.batch.end()
 
     }
 
     override fun keyDown(keycode: Int): Boolean {
         if(keycode == Input.Keys.BACK){
-            Gdx.app.exit()
+            app.exit()
         }
         return false;
     }
@@ -92,7 +97,7 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         val touchPos = Vector3()
-        touchPos.set(Gdx.input.getX(0).toFloat(), Gdx.input.getY(0).toFloat(), 0f)
+        touchPos.set(input.getX(0).toFloat(), input.getY(0).toFloat(), 0f)
         camera.unproject(touchPos) //важная функция для того, чтобы подгонять координаты приложения в разных телефонах
         if (startRect.contains(touchPos.x, touchPos.y)) {
             game.screen = GameScreen(game)
@@ -102,14 +107,17 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
             game.screen = OptionScreen(game)
             dispose()
         }
-
+        if (aboutRect.contains(touchPos.x, touchPos.y)) {
+            game.screen = AboutScreen(game)
+            dispose()
+        }
         return false
     }
 
     override fun resize(width: Int, height: Int) {}
 
     override fun show() {
-        Gdx.input.inputProcessor = GestureDetector(this)
+        input.inputProcessor = GestureDetector(this)
     }
 
     override fun hide() {}
