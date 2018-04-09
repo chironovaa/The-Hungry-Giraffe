@@ -88,8 +88,8 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
         game.batch.draw(textDownSticker, rectDownSticker.x, rectDownSticker.y, rectDownSticker.width, rectDownSticker.height)
         game.batch.draw(textGiraffeHead, rectGiraffeHead.x, rectGiraffeHead.y, rectGiraffeHead.width, rectGiraffeHead.height)
         game.batch.draw(textBackButton, rectBackButton.x, rectBackButton.y, rectBackButton.width, rectBackButton.height)
-        game.font.getData().setScale(2f, 2f);
-        game.font.draw(game.batch, points.toString(), 620f, 1100f);
+        game.font.getData().setScale(2f, 2f)
+        game.font.draw(game.batch, points.toString(), 620f, 1100f)
         drawBonuses()
         game.batch.end()
         control()
@@ -102,7 +102,7 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
     }
 
     fun control(){ //написана отдельная функция для управления, чтобы кнопка реагировала даже в случае, когда пользователь не отпускает палец
-        var SPEED = 5f;
+        val SPEED = 5f
         if(Gdx.input.isTouched(0)) {
             val touchPos = Vector3()
             touchPos.set(Gdx.input.getX(0).toFloat(), Gdx.input.getY(0).toFloat(), 0f)
@@ -134,90 +134,52 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
     }
 
     fun drawBonuses(){
-        var SIZE_APPLE = 100f
-        var r = 0
-        var c = 0
-        for(row in apples){
-            c = 0
-            for(cell in row){
-                if(apples[r][c] == 1){
+        val SIZE_APPLE = 100f
+        for((r, row) in apples.withIndex()){
+            for(c in row.indices) {
+                if (apples[r][c] == 1){
                     game.batch.draw(textApple, r * SIZE_APPLE, c * SIZE_APPLE, SIZE_APPLE, SIZE_APPLE)
                 }
-                c++
             }
-            r++
         }
     }
 
-    fun pickup(){
-        var r = 0
-        var c = 0
-        for(row in apples){
-            c = 0
-            for(cell in row){
-                if(cell == 1){
-                    val touchPos = Vector3()
-                    touchPos.set(r * 100f + 50f, c * 100f + 50f, 0f)
-                    if (rectGiraffeHead.contains(touchPos.x, touchPos.y)){
-                        apples[r][c] = 0
-                        points++
-                    }
+    private fun pickup() {
+        apples.withIndex().forEach { (r, row) ->
+            for((c, cell) in row.withIndex()) if (cell == 1) {
+                val touchPos = Vector3()
+                touchPos.set(r * 100f + 50f, c * 100f + 50f, 0f)
+                if (rectGiraffeHead.contains(touchPos.x, touchPos.y)){
+                    apples[r][c] = 0
+                    points++
                 }
-                c++
             }
-            r++
         }
     }
 
-    override fun keyDown(keycode: Int): Boolean {
-        return false;
-    }
+    override fun keyDown(keycode: Int) = false
 
-    override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        return false;
-    }
+    override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int) = false
 
-    override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
-        return false;
-    }
+    override fun mouseMoved(screenX: Int, screenY: Int) = false
 
-    override fun keyTyped(character: Char): Boolean {
-        return false;
-    }
+    override fun keyTyped(character: Char) = false
 
-    override fun scrolled(amount: Int): Boolean {
-        return false;
-    }
+    override fun scrolled(amount: Int) = false
 
-    override fun keyUp(keycode: Int): Boolean {
-        return false;
-    }
+    override fun keyUp(keycode: Int) = false
 
-    override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-        return false;
-    }
+    override fun touchDragged(screenX: Int, screenY: Int, pointer: Int) = false
 
-    override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        return false;
-    }
+    override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int) = false
 
-    override fun resize(width: Int, height: Int) {
+    override fun resize(width: Int, height: Int) = Unit
 
-    }
+    override fun pause() = Unit
 
-    override fun pause() {
+    override fun resume() = Unit
 
-    }
+    override fun hide() = Unit
 
-    override fun resume() {
-
-    }
-
-    override fun hide() {
-
-    }
-
-    override fun dispose() {
-
-    }
+    override fun dispose() = Unit
 }

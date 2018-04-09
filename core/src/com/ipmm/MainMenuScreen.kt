@@ -17,7 +17,7 @@ import com.badlogic.gdx.math.Vector3
  */
 
 class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.GestureListener, InputProcessor {
-    internal var camera: OrthographicCamera
+    internal var camera = OrthographicCamera()
     internal var texButtonStart: Texture
     internal var texButtonOption: Texture
     internal var texButtonAbout: Texture
@@ -30,10 +30,7 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
     internal var height = 1200
 
     init {
-
-        camera = OrthographicCamera()
         camera.setToOrtho(false, width.toFloat(), height.toFloat())
-
 
         texButtonStart = Texture("play-icon.png")
         texButtonOption = Texture("option-icon.png")
@@ -46,8 +43,8 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
     }
 
     override fun render(delta: Float) {
-        input.setInputProcessor(this); //нужно для работы кнопок телефона. например, кнопки назад.
-        input.setCatchBackKey(true);
+        input.inputProcessor = this //нужно для работы кнопок телефона. например, кнопки назад.
+        input.isCatchBackKey = true
         gl.glClearColor(247f, 247f, 245f, 0f)
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
@@ -68,32 +65,20 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
         if(keycode == Input.Keys.BACK){
             app.exit()
         }
-        return false;
+        return false
     }
 
-    override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        return false;
-    }
+    override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int) = false
 
-    override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
-        return false;
-    }
+    override fun mouseMoved(screenX: Int, screenY: Int) = false
 
-    override fun keyTyped(character: Char): Boolean {
-        return false;
-    }
+    override fun keyTyped(character: Char) = false
 
-    override fun scrolled(amount: Int): Boolean {
-        return false;
-    }
+    override fun scrolled(amount: Int) = false
 
-    override fun keyUp(keycode: Int): Boolean {
-        return false;
-    }
+    override fun keyUp(keycode: Int) = false
 
-    override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-        return false;
-    }
+    override fun touchDragged(screenX: Int, screenY: Int, pointer: Int) = false
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         val touchPos = Vector3()
@@ -114,55 +99,37 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
         return false
     }
 
-    override fun resize(width: Int, height: Int) {}
+    override fun resize(width: Int, height: Int) = Unit
 
     override fun show() {
         input.inputProcessor = GestureDetector(this)
     }
 
-    override fun hide() {}
+    override fun hide() = Unit
 
-    override fun pause() {}
+    override fun pause() = Unit
 
-    override fun resume() {}
+    override fun resume() = Unit
 
-    override fun dispose() {}
+    override fun dispose() = Unit
 
-    override fun touchDown(x: Float, y: Float, pointer: Int, button: Int): Boolean {
-        return false
-    }
+    override fun touchDown(x: Float, y: Float, pointer: Int, button: Int) = false
 
-    override fun tap(x: Float, y: Float, count: Int, button: Int): Boolean {
-        return false
-    }
+    override fun tap(x: Float, y: Float, count: Int, button: Int) = false
 
-    override fun longPress(x: Float, y: Float): Boolean {
-        return false
-    }
+    override fun longPress(x: Float, y: Float) = false
 
-    override fun fling(velocityX: Float, velocityY: Float, button: Int): Boolean {
-        return false
-    }
+    override fun fling(velocityX: Float, velocityY: Float, button: Int) = false
 
-    override fun pan(x: Float, y: Float, deltaX: Float, deltaY: Float): Boolean {
-        return false
-    }
+    override fun pan(x: Float, y: Float, deltaX: Float, deltaY: Float) = false
 
-    override fun panStop(x: Float, y: Float, pointer: Int, button: Int): Boolean {
-        return false
-    }
+    override fun panStop(x: Float, y: Float, pointer: Int, button: Int) = false
 
-    override fun zoom(initialDistance: Float, distance: Float): Boolean {
-        return false
-    }
+    override fun zoom(initialDistance: Float, distance: Float) = false
 
-    override fun pinch(initialPointer1: Vector2, initialPointer2: Vector2, pointer1: Vector2, pointer2: Vector2): Boolean {
-        return false
-    }
+    override fun pinch(initialPointer1: Vector2, initialPointer2: Vector2, pointer1: Vector2, pointer2: Vector2) = false
 
-    override fun pinchStop() {
-
-    }
+    override fun pinchStop() = Unit
 
     companion object {
         var pMines = 30
