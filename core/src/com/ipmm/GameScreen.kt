@@ -31,6 +31,19 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
     internal lateinit var textQuitMenu: Texture
     internal lateinit var textWin: Texture
     internal lateinit var textLose: Texture
+    internal lateinit var textWall0000: Texture
+    internal lateinit var textWall0001: Texture
+    internal lateinit var textWall0010: Texture
+    internal lateinit var textWall0011: Texture
+    internal lateinit var textWall0100: Texture
+    internal lateinit var textWall0110: Texture
+    internal lateinit var textWall0111: Texture
+    internal lateinit var textWall1000: Texture
+    internal lateinit var textWall1001: Texture
+    internal lateinit var textWall1011: Texture
+    internal lateinit var textWall1100: Texture
+    internal lateinit var textWall1101: Texture
+    internal lateinit var textWall1110: Texture
 
     internal lateinit var rectUpSticker: Rectangle
     internal lateinit var rectLeftSticker: Rectangle
@@ -51,6 +64,7 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
     internal var state = State.RUNNING
 
     val apples: Array<Array<Int>> = Array(10, { Array(10, {0}) }) //временный массив яблок
+    val blocks: Array<Array<Int>> = Array(10, { Array(10, {0}) })
 
 
     init {
@@ -61,6 +75,42 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
 
         apples[0][5] = 1 //положим одно яблоко
         apples[4][5] = 1 //еще одно для проверки
+
+        for((r, row) in blocks.withIndex()) {
+            for (c in row.indices) {
+                blocks[r][c] = 0
+            }
+        }
+
+        for((r, row) in blocks.withIndex()){
+            for(c in row.indices) {
+                if(r == 0)
+                    blocks[r][c] = 1
+                if(r == 9)
+                    blocks[r][c] = 2
+                if(c == 0)
+                    blocks[r][c] = 3
+                if(c == 9)
+                    blocks[r][c] = 4
+                if((c == 0) && (r == 0))
+                    blocks[r][c] = 5
+                if((c == 0) && (r == 9))
+                    blocks[r][c] = 6
+                if((c == 9) && (r == 0))
+                    blocks[r][c] = 7
+                if((c == 9) && (r == 9))
+                    blocks[r][c] = 8
+
+            }
+        }
+
+        blocks[5][2] = 4
+        blocks[3][2] = 8
+        blocks[1][0] = 1
+        blocks[1][1] = 1
+        blocks[1][2] = 1
+        blocks[1][3] = 1
+
         loadTextures()
         createRectangles()
 
@@ -78,6 +128,19 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
         textQuitMenu = Texture("quitmenu.png")
         textWin = Texture("win.png")
         textLose = Texture("lose.png")
+        textWall0000 = Texture("walls\\0000.png")
+        textWall0001 = Texture("walls\\0001.png")
+        textWall0010 = Texture("walls\\0010.png")
+        textWall0011 = Texture("walls\\0011.png")
+        textWall0100 = Texture("walls\\0100.png")
+        textWall0110 = Texture("walls\\0110.png")
+        textWall0111 = Texture("walls\\0111.png")
+        textWall1000 = Texture("walls\\1000.png")
+        textWall1001 = Texture("walls\\1001.png")
+        textWall1011 = Texture("walls\\1011.png")
+        textWall1100 = Texture("walls\\1100.png")
+        textWall1101 = Texture("walls\\1101.png")
+        textWall1110 = Texture("walls\\1110.png")
     }
 
     fun createRectangles(){
@@ -85,7 +148,7 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
         rectLeftSticker = Rectangle(410f, 100f, 100f, 100f)
         rectRightSticker = Rectangle(610f, 100f, 100f, 100f)
         rectDownSticker = Rectangle(510f, 0f, 100f, 100f)
-        rectGiraffeHead = Rectangle(0f, 0f, 100f, 100f)
+        rectGiraffeHead = Rectangle(10f, 10f, 60f, 100f)
         rectBackButton = Rectangle(100f, height - 100f, 100f, 100f)
         rectQuitButton = Rectangle(260f, 500f, 100f, 100f)
         rectResumeButton = Rectangle(260f + 100f, 500f, 100f, 100f)
@@ -97,17 +160,20 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
     }
 
     override fun render(delta: Float) {
-        Gdx.gl.glClearColor(247f, 247f, 245f, 0f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        //Gdx.gl.glClearColor(247f, 247f, 245f, 0f)
+        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         game.batch.begin()
         game.batch.draw(textWall, 0f, 0f, width.toFloat(), height.toFloat())
+        drawLab()
         game.batch.draw(textUpSticker, rectUpSticker.x, rectUpSticker.y, rectUpSticker.width, rectUpSticker.height)
         game.batch.draw(textLeftSticker, rectLeftSticker.x, rectLeftSticker.y, rectLeftSticker.width, rectLeftSticker.height)
         game.batch.draw(textRightSticker, rectRightSticker.x, rectRightSticker.y, rectRightSticker.width, rectRightSticker.height)
         game.batch.draw(textDownSticker, rectDownSticker.x, rectDownSticker.y, rectDownSticker.width, rectDownSticker.height)
         game.batch.draw(textGiraffeHead, rectGiraffeHead.x, rectGiraffeHead.y, rectGiraffeHead.width, rectGiraffeHead.height)
         game.batch.draw(textBackButton, rectBackButton.x, rectBackButton.y, rectBackButton.width, rectBackButton.height)
+
+
         game.font.getData().setScale(2f, 2f)
         game.font.draw(game.batch, points.toString(), 620f, 1100f)
         drawBonuses()
@@ -120,6 +186,10 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
             }
             State.RUNNING -> {
                 pickup()
+                crash()
+                if(points == 2){
+                    state = State.WIN
+                }
             }
             State.LOSE -> {
                 game.batch.begin()
@@ -147,6 +217,43 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
 
     }
 
+    fun drawLab(){
+        for((r, row) in blocks.withIndex()) {
+            for (c in row.indices) {
+                when(blocks[r][c]){
+                    0 -> {
+                        game.batch.draw(textWall0000, 72f * r, 120f * c, 72f, 120f)
+                    }
+                    1 -> {
+                        game.batch.draw(textWall0001, 72f * r, 120f * c, 72f, 120f)
+                    }
+                    2 -> {
+                        game.batch.draw(textWall0100, 72f * r, 120f * c, 72f, 120f)
+                    }
+                    3 -> {
+                        game.batch.draw(textWall0010, 72f * r, 120f * c, 72f, 120f)
+                    }
+                    4 -> {
+                        game.batch.draw(textWall1000, 72f * r, 120f * c, 72f, 120f)
+                    }
+                    5 -> {
+                        game.batch.draw(textWall0011, 72f * r, 120f * c, 72f, 120f)
+                    }
+                    6 -> {
+                        game.batch.draw(textWall0110, 72f * r, 120f * c, 72f, 120f)
+                    }
+                    7 -> {
+                        game.batch.draw(textWall1001, 72f * r, 120f * c, 72f, 120f)
+                    }
+                    8 -> {
+                        game.batch.draw(textWall1100, 72f * r, 120f * c, 72f, 120f)
+                    }
+
+                }
+            }
+        }
+    }
+
     fun control(){ //написана отдельная функция для управления, чтобы кнопка реагировала даже в случае, когда пользователь не отпускает палец
         val SPEED = 5f
         if(Gdx.input.isTouched(0)) {
@@ -157,6 +264,8 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
                 if (rectUpSticker.contains(touchPos.x, touchPos.y)) {
                     if(rectGiraffeHead.y + SPEED + rectGiraffeHead.height < height) {
                         rectGiraffeHead.setY(rectGiraffeHead.y + SPEED)
+                    } else {
+                        state = State.LOSE
                     }
                 }
                 if (rectDownSticker.contains(touchPos.x, touchPos.y)) {
@@ -170,12 +279,14 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
                     if(rectGiraffeHead.x - SPEED > 0) {
                         rectGiraffeHead.setX(rectGiraffeHead.x - SPEED)
                     } else {
-                        state = State.WIN
+                        state = State.LOSE
                     }
                 }
                 if (rectRightSticker.contains(touchPos.x, touchPos.y)) {
                     if(rectGiraffeHead.x + SPEED + rectGiraffeHead.width < width) {
                         rectGiraffeHead.setX(rectGiraffeHead.x + SPEED)
+                    } else {
+                        state = State.LOSE
                     }
                 }
                 if (rectBackButton.contains(touchPos.x, touchPos.y)) {
@@ -218,7 +329,7 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
         for((r, row) in apples.withIndex()){
             for(c in row.indices) {
                 if (apples[r][c] == 1){
-                    game.batch.draw(textApple, r * SIZE_APPLE, c * SIZE_APPLE, SIZE_APPLE, SIZE_APPLE)
+                    game.batch.draw(textApple, r * 72f, c * 120f, 72f, 120f)
                 }
             }
         }
@@ -228,10 +339,50 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
         apples.withIndex().forEach { (r, row) ->
             for((c, cell) in row.withIndex()) if (cell == 1) {
                 val touchPos = Vector3()
-                touchPos.set(r * 100f + 50f, c * 100f + 50f, 0f)
+                touchPos.set(r * 72f + 36f, c * 120f + 60f, 0f)
                 if (rectGiraffeHead.contains(touchPos.x, touchPos.y)){
                     apples[r][c] = 0
                     points++
+                }
+            }
+        }
+    }
+
+    private fun crash() {
+        for((r, row) in blocks.withIndex()) {
+            for (c in row.indices) {
+                val touchPos = Vector3(-100f, -100f, -100f)
+                val touchPos2 = Vector3(-100f, -100f, -100f)
+                if(blocks[r][c] == 1) {
+                    touchPos.set(r * 72f, c * 120f + 60f, 0f)
+                }
+                if(blocks[r][c] == 2) {
+                    touchPos.set(r * 72f + 72f, c * 120f + 60f, 0f)
+                }
+                if(blocks[r][c] == 3) {
+                    touchPos.set(r * 72f + 36f, c * 120f, 0f)
+                }
+                if(blocks[r][c] == 4) {
+                    touchPos.set(r * 72f + 36f, c * 120f + 120f, 0f)
+                }
+                if(blocks[r][c] == 5) {
+                    touchPos.set(r * 72f + 36f, c * 120f, 0f)
+                    touchPos2.set(r * 72f, c * 120f + 60f, 0f)
+                }
+                if(blocks[r][c] == 6) {
+                    touchPos.set(r * 72f + 72f, c * 120f + 60f, 0f)
+                    touchPos2.set(r * 72f + 36f, c * 120f, 0f)
+                }
+                if(blocks[r][c] == 7) {
+                    touchPos.set(r * 72f + 36f, c * 120f + 120f, 0f)
+                    touchPos2.set(r * 72f, c * 120f + 60f, 0f)
+                }
+                if(blocks[r][c] == 8) {
+                    touchPos.set(r * 72f + 72f, c * 120f + 60f, 0f)
+                    touchPos2.set(r * 72f + 36f, c * 120f + 120f, 0f)
+                }
+                if (rectGiraffeHead.contains(touchPos.x, touchPos.y) || rectGiraffeHead.contains(touchPos2.x, touchPos2.y)) {
+                    state = State.LOSE
                 }
             }
         }
