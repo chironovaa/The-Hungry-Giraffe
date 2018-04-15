@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
 
+
 /**
  * Created by Oleg on 11.03.2018.
  */
@@ -28,6 +29,8 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
     internal lateinit var textBackButton: Texture
     internal lateinit var textApple: Texture
     internal lateinit var textQuitMenu: Texture
+    internal lateinit var textWin: Texture
+    internal lateinit var textLose: Texture
 
     internal lateinit var rectUpSticker: Rectangle
     internal lateinit var rectLeftSticker: Rectangle
@@ -37,11 +40,12 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
     internal lateinit var rectBackButton : Rectangle
     internal lateinit var rectQuitButton : Rectangle
     internal lateinit var rectResumeButton : Rectangle
+    internal lateinit var rectOkButton : Rectangle
 
     internal var points: Int = 0
 
     enum class State() {
-        PAUSE, RUNNING
+        PAUSE, RUNNING, LOSE, WIN
     }
 
     internal var state = State.RUNNING
@@ -72,6 +76,8 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
         textBackButton = Texture("back-icon.png")
         textApple = Texture("apple.png")
         textQuitMenu = Texture("quitmenu.png")
+        textWin = Texture("win.png")
+        textLose = Texture("lose.png")
     }
 
     fun createRectangles(){
@@ -83,6 +89,7 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
         rectBackButton = Rectangle(100f, height - 100f, 100f, 100f)
         rectQuitButton = Rectangle(260f, 500f, 100f, 100f)
         rectResumeButton = Rectangle(260f + 100f, 500f, 100f, 100f)
+        rectOkButton = Rectangle(260f + 50f, 500f, 100f, 100f)
     }
 
     override fun show() {
@@ -114,6 +121,16 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
             State.RUNNING -> {
                 pickup()
             }
+            State.LOSE -> {
+                game.batch.begin()
+                game.batch.draw(textLose, 260f, 500f, 200f, 200f)
+                game.batch.end()
+            }
+            State.WIN -> {
+                game.batch.begin()
+                game.batch.draw(textWin, 260f, 500f, 200f, 200f)
+                game.batch.end()
+            }
             else -> {
 
             }
@@ -123,6 +140,10 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
 
 
 
+
+    }
+
+    fun loadLab(){
 
     }
 
@@ -141,11 +162,15 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
                 if (rectDownSticker.contains(touchPos.x, touchPos.y)) {
                     if(rectGiraffeHead.y - SPEED > 0) {
                         rectGiraffeHead.setY(rectGiraffeHead.y - SPEED)
+                    } else {
+                        state = State.LOSE
                     }
                 }
                 if (rectLeftSticker.contains(touchPos.x, touchPos.y)) {
                     if(rectGiraffeHead.x - SPEED > 0) {
                         rectGiraffeHead.setX(rectGiraffeHead.x - SPEED)
+                    } else {
+                        state = State.WIN
                     }
                 }
                 if (rectRightSticker.contains(touchPos.x, touchPos.y)) {
@@ -158,16 +183,33 @@ class GameScreen(internal val game: MainActivity) : Screen, InputProcessor {
                 }
             }
 
-            if(state == State.PAUSE){
-                if (rectResumeButton.contains(touchPos.x, touchPos.y)) {
-                    state = State.RUNNING
+            when(state) {
+                State.PAUSE -> {
+                    if (rectResumeButton.contains(touchPos.x, touchPos.y)) {
+                        state = State.RUNNING
+                    }
+                    if (rectQuitButton.contains(touchPos.x, touchPos.y)) {
+                        println("QUIT")
+                        app.exit()
+                    }
                 }
-                if (rectQuitButton.contains(touchPos.x, touchPos.y)) {
-                   println("QUIT")
-                   app.exit()
+                State.RUNNING -> {
+
+                }
+                State.LOSE -> {
+                    if (rectOkButton.contains(touchPos.x, touchPos.y)) {
+                        game.screen = MainMenuScreen(game)
+                    }
+                }
+                State.WIN -> {
+                    if (rectOkButton.contains(touchPos.x, touchPos.y)) {
+                        game.screen = MainMenuScreen(game)
+                    }
+                }
+                else -> {
+
                 }
             }
-
         }
     }
 
