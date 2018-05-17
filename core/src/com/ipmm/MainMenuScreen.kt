@@ -11,6 +11,9 @@ import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.Gdx
+
+
 
 /**
  * Created by Oleg on 17.03.2018.
@@ -85,16 +88,20 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
         touchPos.set(input.getX(0).toFloat(), input.getY(0).toFloat(), 0f)
         camera.unproject(touchPos) //важная функция для того, чтобы подгонять координаты приложения в разных телефонах
         if (startRect.contains(touchPos.x, touchPos.y)) {
-            game.screen = GameScreen(game)
+            game.screen = LevelScreen(game)
+            Gdx.input.setInputProcessor(null)
             dispose()
         }
         if (optionRect.contains(touchPos.x, touchPos.y)) {
             game.screen = OptionScreen(game)
+            Gdx.input.setInputProcessor(null)
             dispose()
         }
         if (aboutRect.contains(touchPos.x, touchPos.y)) {
             game.screen = AboutScreen(game)
+            Gdx.input.setInputProcessor(null)
             dispose()
+            //LabConverter().start("qqq");
         }
         return false
     }

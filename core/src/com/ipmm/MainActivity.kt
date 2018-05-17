@@ -5,13 +5,9 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 
 
-class MainActivity(iActivity: AndroidActivity) : Game() {
+class MainActivity : Game() {
     internal lateinit var batch: SpriteBatch
     internal lateinit var font: BitmapFont
-
-    init {
-        iActivity.test()
-    }
 
     override fun create() {
         batch = SpriteBatch()
