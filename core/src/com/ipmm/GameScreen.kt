@@ -76,7 +76,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         Gdx.input.setCatchBackKey(true); //нужно для перехвата механической кнопки назад
         camera = OrthographicCamera()
         camera.setToOrtho(false, width.toFloat(), height.toFloat())
-        mapCreate() //функция для конструирования карты
+        mapCreate(level) //функция для конструирования карты
         loadTextures()
         createRectangles()
     }
@@ -84,25 +84,63 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
     /**
      * Загрузка уровня.
      */
-    fun mapCreate(){//функция для загрузки карты, определяем уровень, достаем из файла, записываем в map
+    fun mapCreate(level : Int){//функция для загрузки карты, определяем уровень, достаем из файла, записываем в map
         /*тут будет код для загруки уровней. Номер уровня лежит в переменной level*/
-        map[0][0] = HEAD
-        map[0][2] = APPLE
-        map[7][2] = APPLE
-        map[9][3] = APPLE
-        map[4][4] = BLOCK
-        map[4][5] = BLOCK
-        map[6][8] = BLOCK
-        map[2][3] = BLOCK
-        map[9][2] = BLOCK
-        map[14][14] = EXIT
+        when(level) {
+            0 -> {
+                map[0][0] = HEAD
+                map[0][2] = APPLE
+                map[7][2] = APPLE
+                map[9][3] = APPLE
+                map[4][4] = BLOCK
+                map[4][5] = BLOCK
+                map[6][8] = BLOCK
+                map[2][3] = BLOCK
+                map[9][2] = BLOCK
+                map[14][14] = EXIT
+            }
+            1 -> {
+                map[0][0] = HEAD
+                map[14][14] = EXIT
+                for (i in 3..9)
+                    map[4][i] = BLOCK
+                for (i in 3..9)
+                    map[8][i] = BLOCK
+                for (i in 3..11)
+                    map[i][6] = BLOCK
+                map[6][5] = APPLE
+                map[6][7] = APPLE
+                map[10][5] = APPLE
+                map[10][7] = APPLE
+            }
+            2 -> {
+                map[0][0] = HEAD
+                map[14][14] = EXIT
+                for (i in 0..4) {
+                    map[i][5] = BLOCK
+                    map[i + 10][5] = BLOCK
+                    map[i + 5][10] = BLOCK
+                }
+                map[2][2] = APPLE
+                map[7][2] = APPLE
+                map[12][2] = APPLE
+                map[2][7] = APPLE
+                map[7][7] = APPLE
+                map[12][7] = APPLE
+                map[2][12] = APPLE
+                map[7][12] = APPLE
+                map[12][12] = APPLE
+            }
+            else -> {
+            }
+        }
     }
 
     /**
      * Загрузка текстур.
      */
     fun loadTextures(){ //важен порядок, в котором мы кладем текстуры(см. enum). потом исправим
-        gameText.add(GameTexture.WALL.ordinal, Texture("game.png"))
+        gameText.add(GameTexture.WALL.ordinal, Texture("fon.png"))
         gameText.add(GameTexture.APPLE.ordinal, Texture("apple.png"))
         gameText.add(GameTexture.GIRAFFEHEAD.ordinal, Texture("giraffe.png"))
         gameText.add(GameTexture.NECK.ordinal, Texture("neck.png"))
