@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
+import java.awt.SystemColor.control
 import java.lang.Math.abs
 
 
@@ -43,7 +44,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
     val mapH = width //Не используются, т.к. я еще не исправила drawMap()
     val n = 15 //Высота лабиринта (в клетках)
     val m = 15 //Ширина
-    var headX = 0 //координаты головы жирафа (тоже в клетках)
+    var headX = 1 //координаты головы жирафа (тоже в клетках)
     var headY = 0 //Можно потом заменить на point
 
 
@@ -86,50 +87,80 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
      */
     fun mapCreate(level : Int){//функция для загрузки карты, определяем уровень, достаем из файла, записываем в map
         /*тут будет код для загруки уровней. Номер уровня лежит в переменной level*/
+
+        //общие границы, голова и выход для всех уровней.
+        map[1][0] = HEAD
+        map[14][8] = EXIT
+        map[14][9] = EXIT
+        map[14][10] = EXIT
+        for (i in 0..11)
+            map[0][i] = BLOCK
+        for (i in 0..7)
+            map[14][i] = BLOCK
+        for(i in 1..14)
+            map[i][11] = BLOCK
+        for(i in 4..13)
+            map[i][0] = BLOCK
+        //индивидуально для каждого уровня яблоки и стены внутри области лабиринта
         when(level) {
             0 -> {
-                map[0][0] = HEAD
-                map[0][2] = APPLE
-                map[7][2] = APPLE
-                map[9][3] = APPLE
-                map[4][4] = BLOCK
-                map[4][5] = BLOCK
-                map[6][8] = BLOCK
-                map[2][3] = BLOCK
-                map[9][2] = BLOCK
-                map[14][14] = EXIT
+                //блоки
+                for (i in 1..7)
+                    map[4][i] = BLOCK
+                for(i in 1..3)
+                    map[7][i] = BLOCK
+                for(i in 1..14)
+                    map[i][11] = BLOCK
+                for(i in 5..7)
+                    map[i][6] = BLOCK
+                for(i in 10..13)
+                    map[i][4] = BLOCK
+                //яблоки
+                map[1][1] = APPLE
+                map[1][5] = APPLE
+                map[1][9] = APPLE
+                map[5][9] = APPLE
+                map[9][9] = APPLE
+                map[13][9] = APPLE
             }
             1 -> {
-                map[0][0] = HEAD
-                map[14][14] = EXIT
-                for (i in 3..9)
+                //блоки
+                for(i in 1..3)
                     map[4][i] = BLOCK
-                for (i in 3..9)
-                    map[8][i] = BLOCK
-                for (i in 3..11)
-                    map[i][6] = BLOCK
-                map[6][5] = APPLE
-                map[6][7] = APPLE
+                for(i in 7..11)
+                    map[4][i] = BLOCK
+                for(i in 7..11)
+                    map[9][i] = BLOCK
+                for(i in 10..13)
+                    map[i][4] = BLOCK
+                //яблоки
+                map[1][1] = APPLE
+                map[1][5] = APPLE
+                map[5][5] = APPLE
+                map[6][2] = APPLE
+                map[7][8] = APPLE
                 map[10][5] = APPLE
-                map[10][7] = APPLE
+                map[13][9] = APPLE
             }
             2 -> {
-                map[0][0] = HEAD
-                map[14][14] = EXIT
-                for (i in 0..4) {
-                    map[i][5] = BLOCK
-                    map[i + 10][5] = BLOCK
-                    map[i + 5][10] = BLOCK
-                }
+                //блоки
+                for(i in 1..7)
+                    map[7][i] = BLOCK
+                for(i in 6..10)
+                    map[11][i] = BLOCK
+                for(i in 1..3)
+                    map[i][4] = BLOCK
+                for(i in 4..7)
+                    map[i][7] = BLOCK
+                //яблоки
                 map[2][2] = APPLE
-                map[7][2] = APPLE
-                map[12][2] = APPLE
+                map[5][4] = APPLE
                 map[2][7] = APPLE
-                map[7][7] = APPLE
-                map[12][7] = APPLE
-                map[2][12] = APPLE
-                map[7][12] = APPLE
-                map[12][12] = APPLE
+                map[5][9] = APPLE
+                map[9][3] = APPLE
+                map[9][6] = APPLE
+                map[12][3] = APPLE
+                map[9][13] = APPLE
             }
             else -> {
             }
