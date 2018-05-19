@@ -359,10 +359,10 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 else{
                     if ((x < n-1)&&isHEAD(map[x + 1][y])){
                         map[x][y] = HEAD_W
-                        when(map[x-1][y]){
-                            HEAD_N->map[x-1][y] = NECK_SW
-                            HEAD_W->map[x-1][y] = NECK_WE
-                            HEAD_S->map[x-1][y] = NECK_NW
+                        when(map[x+1][y]){
+                            HEAD_N->map[x+1][y] = NECK_SW
+                            HEAD_W->map[x+1][y] = NECK_WE
+                            HEAD_S->map[x+1][y] = NECK_NW
                         }
                     }
                     else{
@@ -454,54 +454,6 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 NECK_SW-> t = gameText.get(GameTexture.NECK_SW.ordinal)
                 NECK_NE-> t = gameText.get(GameTexture.NECK_NE.ordinal)
                 NECK_NW-> t = gameText.get(GameTexture.NECK_NW.ordinal)
-               /* NECK_N->{
-                    when(map[x][y-1]){
-                        NECK_N -> t = gameText.get(GameTexture.NECK_NS.ordinal)
-                        NECK_W -> t = gameText.get(GameTexture.NECK_SE.ordinal)
-                        NECK_E -> t = gameText.get(GameTexture.NECK_SW.ordinal)
-                        else -> {
-                            print("$x $y ")
-                            println(map[x][y])
-
-                        }
-                    }
-                }
-                NECK_E->{
-                    when(map[x-1][y]){
-                        NECK_N -> t = gameText.get(GameTexture.NECK_SE.ordinal)
-                        NECK_S -> t = gameText.get(GameTexture.NECK_NE.ordinal)
-                        NECK_E -> t = gameText.get(GameTexture.NECK_WE.ordinal)
-                        else -> {
-                            print("$x $y ")
-                            print(map[x][y])
-                            println(map[x][y])
-                        }
-                    }
-                }
-                NECK_S->{
-                    when(map[x][y+1]){
-                        NECK_S -> t = gameText.get(GameTexture.NECK_NS.ordinal)
-                        NECK_W -> t = gameText.get(GameTexture.NECK_SE.ordinal)
-                        NECK_E -> t = gameText.get(GameTexture.NECK_SW.ordinal)
-                        else -> {
-                            print("$x $y ")
-                            println(map[x][y])
-
-                        }
-                    }
-                }
-                NECK_W->{
-                    when(map[x+1][y]){
-                        NECK_N -> t = gameText.get(GameTexture.NECK_SW.ordinal)
-                        NECK_W -> t = gameText.get(GameTexture.NECK_WE.ordinal)
-                        NECK_S -> t = gameText.get(GameTexture.NECK_SW.ordinal)
-                        else -> {
-                            print("$x $y ")
-                            println(map[x][y])
-
-                        }
-                    }
-                }*/
                 else -> {
                     print("$x $y ")
                     println(map[x][y])
