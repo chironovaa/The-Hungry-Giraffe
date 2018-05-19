@@ -160,7 +160,6 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 map[9][3] = APPLE
                 map[9][6] = APPLE
                 map[12][3] = APPLE
-                map[9][13] = APPLE
             }
             else -> {
             }
