@@ -3,6 +3,7 @@ package com.ipmm
 
 import com.badlogic.gdx.*
 import com.badlogic.gdx.Gdx.app
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
@@ -255,8 +256,17 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
      * Отрисовка текста
      */
     fun drawText(){
+        game.font.color.set(Color.BLACK)
+        //отрисовка яблок, собранных на этом уровне
         game.font.getData().setScale(2f, 2f)
-        game.font.draw(game.batch, points.toString(), 620f, 1100f)
+        game.batch.draw(gameText.get(GameTexture.APPLE.ordinal), 500f, 1075f, width.toFloat()/15, width.toFloat()/15)
+        game.font.draw(game.batch, " = " + points.toString(), 550f, 1105f)
+
+        //количество яблок, собранных всего
+        game.font.getData().setScale(2f, 2f)
+        game.batch.draw(gameText.get(GameTexture.APPLE.ordinal), 500f, 1150f, width.toFloat()/15, width.toFloat()/15)
+        game.batch.draw(gameText.get(GameTexture.APPLE.ordinal), 450f, 1150f, width.toFloat()/15, width.toFloat()/15)
+        game.font.draw(game.batch, " = " + game.Points.toString(), 550f, 1180f)
     }
 
     /**
@@ -276,9 +286,9 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
             State.WIN -> {
                 game.batch.draw(messagesText.get(Message.WINMEESAGE.ordinal), 260f, 500f, 200f, 200f)
             }
-            else -> {
+            /*else -> {
                 /*nothing*/
-            }
+            }*/
         }
     }
 
@@ -415,14 +425,12 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 }
                 State.WIN -> {
                     if (buttonsRect.get(Button.OK.ordinal).contains(touchPos.x, touchPos.y)) {
+                        game.Points += points;
                         if(level < 2)
                             game.screen = GameScreen(game, level + 1, swap);
                         else game.screen = LevelScreen(game);
                         Gdx.input.setInputProcessor(null)
                     }
-                }
-                else -> {
-
                 }
             }
         }
