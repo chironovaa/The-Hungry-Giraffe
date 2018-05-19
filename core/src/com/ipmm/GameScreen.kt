@@ -112,7 +112,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 for(i in 1..14)
                     map[i][11] = BLOCK
                 for(i in 5..7)
-                    map[i][6] = BLOCK
+                    map[i][7] = BLOCK
                 for(i in 10..13)
                     map[i][4] = BLOCK
                 //яблоки
