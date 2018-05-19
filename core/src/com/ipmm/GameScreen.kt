@@ -390,7 +390,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                     speed_x = 1
                 }
                 if (buttonsRect.get(Button.BACK.ordinal).contains(touchPos.x, touchPos.y)) {
-                    game.screen = MainMenuScreen(game)
+                    game.screen = LevelScreen(game)
                     Gdx.input.setInputProcessor(null) //фикс бага с невидимыми кнопками
                 }
             }
@@ -410,13 +410,15 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 }
                 State.LOSE -> {
                     if (buttonsRect.get(Button.OK.ordinal).contains(touchPos.x, touchPos.y)) {
-                        game.screen = MainMenuScreen(game)
+                        game.screen = GameScreen(game, level, swap);
                         Gdx.input.setInputProcessor(null)
                     }
                 }
                 State.WIN -> {
                     if (buttonsRect.get(Button.OK.ordinal).contains(touchPos.x, touchPos.y)) {
-                        game.screen = MainMenuScreen(game)
+                        if(level < 2)
+                            game.screen = GameScreen(game, level + 1, swap);
+                        else game.screen = LevelScreen(game);
                         Gdx.input.setInputProcessor(null)
                     }
                 }
