@@ -35,15 +35,20 @@ class OptionScreen(internal val game: MainActivity) : Screen, InputProcessor {
     internal lateinit var textLanguageText: Texture
     internal lateinit var rectLanguageText: Rectangle
     internal lateinit var rectLanguage: Rectangle
-    internal var control: Boolean = true
     internal var sounds: Boolean = false
     internal var language: Boolean = true
-    internal var is_action_control: Boolean = false
+    internal var is_action_control: Boolean = true
     internal var is_action_sounds: Boolean = false
     internal var is_action_language: Boolean = false
 
     internal var icon_w: Float = 200f
     internal var icon_h: Float = 200f
+
+    class settings {
+        companion object Factory {
+            var swap = true
+        }
+    }
 
     init {
         /*заглушка, просто показывает картинку*/
@@ -68,7 +73,7 @@ class OptionScreen(internal val game: MainActivity) : Screen, InputProcessor {
         game.batch.draw(textBackButton, rectBackButton.x, rectBackButton.y, rectBackButton.width, rectBackButton.height)
         game.batch.draw(textControlText , rectControlText.x, rectControlText.y, rectControlText.width, rectControlText.height)
 
-        if (control)
+        if (settings.swap)
             if (is_action_control)
                 game.batch.draw(textOn, rectControl.x, rectControl.y, rectControl.width, rectControl.height)
             else
@@ -143,7 +148,7 @@ class OptionScreen(internal val game: MainActivity) : Screen, InputProcessor {
                 Gdx.input.setInputProcessor(null)
             }
             if (is_action_control && rectControl.contains(touchPos.x, touchPos.y)) {
-                control = control.not()
+                settings.swap = settings.swap.not()
             }
             if (is_action_sounds && rectSounds.contains(touchPos.x, touchPos.y)) {
                 sounds = sounds.not()

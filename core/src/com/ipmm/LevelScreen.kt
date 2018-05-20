@@ -89,19 +89,19 @@ class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.Ges
             game.screen = MainMenuScreen(game)
         }
         if (level1Rect.contains(touchPos.x, touchPos.y)) {
-            var gs : GameScreen = GameScreen(game, 0, false)
+            var gs : GameScreen = GameScreen(game, 0, OptionScreen.settings.swap.not())
             game.screen = gs
             Gdx.input.setInputProcessor(null)
             dispose()
         }
         if (level2Rect.contains(touchPos.x, touchPos.y)) {
-            var gs : GameScreen = GameScreen(game, 2, false)
+            var gs : GameScreen = GameScreen(game, 2, OptionScreen.settings.swap.not())
             game.screen = gs
             Gdx.input.setInputProcessor(null)
             dispose()
         }
         if (level3Rect.contains(touchPos.x, touchPos.y)) {
-            var gs : GameScreen = GameScreen(game, 1, false)
+            var gs : GameScreen = GameScreen(game, 1, OptionScreen.settings.swap.not())
             game.screen = gs
             Gdx.input.setInputProcessor(null)
             dispose()

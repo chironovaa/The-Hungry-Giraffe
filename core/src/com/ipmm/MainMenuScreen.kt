@@ -32,6 +32,7 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
     internal var width = 720
     internal var height = 1200
 
+
     init {
         camera.setToOrtho(false, width.toFloat(), height.toFloat())
 

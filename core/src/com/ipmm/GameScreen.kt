@@ -3,6 +3,7 @@ package com.ipmm
 
 import com.badlogic.gdx.*
 import com.badlogic.gdx.Gdx.app
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
@@ -16,14 +17,29 @@ import java.lang.Math.abs
  * Created by Oleg on 11.03.2018.
  */
 
-val NECK = 1
-val HEAD = 2
+//val NECK_N = 11
+//val NECK_E = 12
+val NECK_S = 13
+val NECK_W = 14
+val NECK_NS = 15
+val NECK_WE = 16
+val NECK_NW = 17
+val NECK_NE = 18
+val NECK_SW = 19
+val NECK_SE = 20
+
+val HEAD_N = 21
+val HEAD_E = 22
+val HEAD_S = 23
+val HEAD_W = 24
+
 val BLOCK = 3
 val APPLE = 4
 val EXIT = 5
 
+
 enum class Button {
-    UPSTICKER, LEFTSTICKER, RIGHTSTICKER, DOWNSTICKER, BACK, RESUME, QUIT, OK
+    UPSTICKER, LEFTSTICKER, RIGHTSTICKER, DOWNSTICKER, BODY,  BACK, RESUME, QUIT, OK
 }
 
 enum class Message {
@@ -31,7 +47,7 @@ enum class Message {
 }
 
 enum class GameTexture {
-    WALL, APPLE, GIRAFFEHEAD, NECK, BLOCK, EXIT
+    WALL, APPLE, GIRAFFEHEAD, NECK_NS , NECK_WE , NECK_SE ,NECK_SW , NECK_NE ,NECK_NW , BLOCK, EXIT, HEAD_N, HEAD_W, HEAD_S, HEAD_E
 }
 
 class GameScreen(internal val game: MainActivity, internal val level : Int, internal val swap : Boolean) : Screen, InputProcessor {
@@ -40,12 +56,17 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
     internal var width = 720
     internal var height = 1200
 
+    val startX = 1
+    val startY = 0
+
     val mapW = width //Ширина и высота лабиринта (в пикселях)
     val mapH = width //Не используются, т.к. я еще не исправила drawMap()
     val n = 15 //Высота лабиринта (в клетках)
     val m = 15 //Ширина
     var headX = 1 //координаты головы жирафа (тоже в клетках)
     var headY = 0 //Можно потом заменить на point
+    var headS = 1.5f // размер головы
+    var neckXS = 0.65f // размер шеи по отношению к высоте шеи
 
 
     internal var buttonsText: ArrayList<Texture> = ArrayList<Texture>() //массив текстур для кнопок
@@ -60,7 +81,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
     internal var speed_y: Int = 0
     internal var dx: Int = 0 //Сдвиг по x/y
     internal var dy: Int = 0    //После некоторого значения голова сдвигается на 1, а переменные обнуляются
-                                //Не разобралась как делать задержку по времени так что пока будет так. Катя.
+    //Не разобралась как делать задержку по времени так что пока будет так. Катя.
 
     enum class State() {
         PAUSE, RUNNING, LOSE, WIN
@@ -89,7 +110,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         /*тут будет код для загруки уровней. Номер уровня лежит в переменной level*/
 
         //общие границы, голова и выход для всех уровней.
-        map[1][0] = HEAD
+        map[1][0] = HEAD_N
         map[14][8] = EXIT
         map[14][9] = EXIT
         map[14][10] = EXIT
@@ -160,7 +181,6 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 map[9][3] = APPLE
                 map[9][6] = APPLE
                 map[12][3] = APPLE
-                map[9][13] = APPLE
             }
             else -> {
             }
@@ -172,15 +192,25 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
      */
     fun loadTextures(){ //важен порядок, в котором мы кладем текстуры(см. enum). потом исправим
         gameText.add(GameTexture.WALL.ordinal, Texture("fon.png"))
-        gameText.add(GameTexture.APPLE.ordinal, Texture("apple.png"))
+        gameText.add(GameTexture.APPLE.ordinal, Texture("apple_red.png"))
         gameText.add(GameTexture.GIRAFFEHEAD.ordinal, Texture("giraffe.png"))
-        gameText.add(GameTexture.NECK.ordinal, Texture("neck.png"))
-        gameText.add(GameTexture.BLOCK.ordinal, Texture("block.png"))
-        gameText.add(GameTexture.EXIT.ordinal, Texture("exit.png"))
+        gameText.add(GameTexture.NECK_NS.ordinal, Texture("neck_ns.png")) //вертикальная текстура шеи
+        gameText.add(GameTexture.NECK_WE.ordinal, Texture("neck_we.png"))
+        gameText.add(GameTexture.NECK_SE.ordinal, Texture("neck_se.png"))
+        gameText.add(GameTexture.NECK_SW.ordinal, Texture("neck_sw.png"))
+        gameText.add(GameTexture.NECK_NE.ordinal, Texture("neck_ne.png"))
+        gameText.add(GameTexture.NECK_NW.ordinal, Texture("neck_nw.png"))
+        gameText.add(GameTexture.BLOCK.ordinal, Texture("block_green.png"))
+        gameText.add(GameTexture.EXIT.ordinal, Texture("fon.png"))
+        gameText.add(GameTexture.HEAD_N.ordinal, Texture("head_n.png"))
+        gameText.add(GameTexture.HEAD_W.ordinal, Texture("head_w.png"))
+        gameText.add(GameTexture.HEAD_S.ordinal, Texture("head_s.png"))
+        gameText.add(GameTexture.HEAD_E.ordinal, Texture("head_e.png"))
         buttonsText.add(Button.UPSTICKER.ordinal, Texture("upsticker.png"))
         buttonsText.add(Button.LEFTSTICKER.ordinal, Texture("leftsticker.png"))
         buttonsText.add(Button.RIGHTSTICKER.ordinal, Texture("rightsticker.png"))
         buttonsText.add(Button.DOWNSTICKER.ordinal, Texture("downsticker.png"))
+        buttonsText.add(Button.BODY.ordinal, Texture("body.png"))
         buttonsText.add(Button.BACK.ordinal, Texture("back-icon.png"))
         messagesText.add(Message.QUITMENU.ordinal, Texture("quitmenu.png"))
         messagesText.add(Message.WINMEESAGE.ordinal, Texture("win.png"))
@@ -196,6 +226,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         buttonsRect.add(Button.LEFTSTICKER.ordinal, Rectangle(380f, 100f, 150f, 150f))
         buttonsRect.add(Button.RIGHTSTICKER.ordinal, Rectangle(580f, 100f, 150f, 150f))
         buttonsRect.add(Button.DOWNSTICKER.ordinal, Rectangle(480f, 0f, 150f, 150f))
+        buttonsRect.add(Button.BODY.ordinal, Rectangle(50f, 320f, 160f, 160f))
         buttonsRect.add(Button.BACK.ordinal, Rectangle(0f, height - 100f, 100f, 100f))
         buttonsRect.add(Button.RESUME.ordinal, Rectangle(260f + 100f, 500f, 100f, 100f))
         buttonsRect.add(Button.QUIT.ordinal, Rectangle(260f, 500f, 100f, 100f))
@@ -222,6 +253,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         }
         drawButtons()
         drawText()
+        drawFond()
         drawMessage()
 
         game.batch.end()
@@ -253,11 +285,28 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
     }
 
     /**
+     * Отрисовка фона
+     */
+    fun drawFond(){
+        game.batch.draw(buttonsText.get(Button.BODY.ordinal), buttonsRect.get(Button.BODY.ordinal).x, buttonsRect.get(Button.BODY.ordinal).y,
+                buttonsRect.get(Button.BODY.ordinal).width, buttonsRect.get(Button.BODY.ordinal).height)
+    }
+
+    /**
      * Отрисовка текста
      */
     fun drawText(){
+        game.font.color.set(Color.BLACK)
+        //отрисовка яблок, собранных на этом уровне
         game.font.getData().setScale(2f, 2f)
-        game.font.draw(game.batch, points.toString(), 620f, 1100f)
+        game.batch.draw(gameText.get(GameTexture.APPLE.ordinal), 500f, 1075f, width.toFloat()/15, width.toFloat()/15)
+        game.font.draw(game.batch, " = " + points.toString(), 550f, 1105f)
+
+        //количество яблок, собранных всего
+        game.font.getData().setScale(2f, 2f)
+        game.batch.draw(gameText.get(GameTexture.APPLE.ordinal), 500f, 1150f, width.toFloat()/15, width.toFloat()/15)
+        game.batch.draw(gameText.get(GameTexture.APPLE.ordinal), 450f, 1150f, width.toFloat()/15, width.toFloat()/15)
+        game.font.draw(game.batch, " = " + game.Points.toString(), 550f, 1180f)
     }
 
     /**
@@ -277,9 +326,9 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
             State.WIN -> {
                 game.batch.draw(messagesText.get(Message.WINMEESAGE.ordinal), 260f, 500f, 200f, 200f)
             }
-            else -> {
-                /*nothing*/
-            }
+        /*else -> {
+            /*nothing*/
+        }*/
         }
     }
 
@@ -289,15 +338,17 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
     fun updateMap(){
         val x = headX
         val y = headY
-        if ((x <0)||(y <0)||(x > m-1)||(y > n-1))
+        if ((x <0)||(y <0)||(x > m-1)||(y > n-1) || (x + 1 <0)||(y + 1 <0)||(x + 1> m-1)||(y+1 > n-1) )
             state = State.LOSE
+
+
 
         if (state != State.LOSE){
             when(map[x][y]){
                 BLOCK -> {
                     state = State.LOSE
                 }
-                NECK -> {
+                in 10..20 -> {
                     state = State.LOSE
                 }
                 APPLE -> {
@@ -307,15 +358,66 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                     state = State.WIN
                 }
             }
-            if ((x > 0)&&(map[x - 1][y] == HEAD)) //Меняем клетку где голова была раньше
-                map[x-1][y] = NECK
-            if ((x < n - 1)&&(map[x + 1][y] == HEAD))
-                map[x+1][y] = NECK
-            if ((y > 0)&&(map[x][y - 1] == HEAD))
-                map[x][y-1] = NECK
-            if ((y < m - 1)&&(map[x][y + 1] == HEAD))
-                map[x][y + 1] = NECK
-            map[x][y] = HEAD
+
+            when(map[x + 1][y])
+            {
+                EXIT -> {
+                    state = State.WIN
+                }
+            }
+
+            if (!isHEAD(map[x][y])){
+                if ((x > 0)&&isHEAD(map[x - 1][y])){
+                    map[x][y] = HEAD_E
+                    if ((x-1 == startX)&&(y == startY)){
+                        map[x-1][y] = NECK_WE
+                    }
+                    else
+                        when(map[x-1][y]){
+                            HEAD_N->map[x-1][y] = NECK_SE
+                            HEAD_E->map[x-1][y] = NECK_WE
+                            HEAD_S->map[x-1][y] = NECK_NE
+                        }
+                }
+                else{
+                    if ((x < n-1)&&isHEAD(map[x + 1][y])){
+                        map[x][y] = HEAD_W
+                        when(map[x+1][y]){
+                            HEAD_N->map[x+1][y] = NECK_SW
+                            HEAD_W->map[x+1][y] = NECK_WE
+                            HEAD_S->map[x+1][y] = NECK_NW
+                        }
+                    }
+                    else{
+                        if ((y > 0)&&isHEAD(map[x][y-1])){
+                            map[x][y] = HEAD_N
+                            if ((x == startX)&&(y-1 == startY)){
+                                map[x][y-1] = NECK_NS
+                            }
+                            else
+                                when(map[x][y-1]){
+                                    HEAD_N->map[x][y-1] = NECK_NS
+                                    HEAD_W->map[x][y-1] = NECK_NE
+                                    HEAD_E->map[x][y-1] = NECK_NW
+                                }
+                        }
+                        else{
+                            if ((y < m-1)&&isHEAD(map[x][y+1])){
+                                map[x][y] = HEAD_S
+                                when(map[x][y+1]){
+                                    HEAD_E->map[x][y+1] = NECK_SW
+                                    HEAD_W->map[x][y+1] = NECK_SE
+                                    HEAD_S->map[x][y+1] = NECK_NS
+                                }
+                            }
+                            else{
+                                map[x][y] = HEAD_S
+                            }
+
+                        }
+                    }
+                }
+            }
         }
 
     }
@@ -332,14 +434,98 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                     game.batch.draw(gameText.get(GameTexture.BLOCK.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
                 if (map[x][y] == EXIT)
                     game.batch.draw(gameText.get(GameTexture.EXIT.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
-                if (map[x][y] == NECK)
-                    game.batch.draw(gameText.get(GameTexture.NECK.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15)+ (h-w), w/15, w/15)
+                //if (map[x][y] == NECK)
+                //   game.batch.draw(gameText.get(GameTexture.NECK.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15)+ (h-w), w/15, w/15)
                 if (map[x][y] == APPLE)
                     game.batch.draw(gameText.get(GameTexture.APPLE.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15)+ (h-w), w/15, w/15)
-                if (map[x][y] == HEAD)
-                    game.batch.draw(gameText.get(GameTexture.GIRAFFEHEAD.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
+                // if (map[x][y] == HEAD)
+                //    game.batch.draw(gameText.get(GameTexture.GIRAFFEHEAD.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
+                if (isNECK(map[x][y]))
+                    drawNeck(x,y,w,h)
+
+                if (isHEAD(map[x][y])){
+                    drawHead(x,y,w ,h)
+                }
+
+
             }
         }
+    }
+
+    fun drawHead(x: Int, y: Int, w: Float, h: Float){
+        //val x = xx+2
+        when(map[x][y]){
+
+            HEAD_N->game.batch.draw(gameText.get(GameTexture.HEAD_N.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15*headS, w/15*headS)
+            HEAD_E->game.batch.draw(gameText.get(GameTexture.HEAD_E.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15*headS, w/15*headS)
+            HEAD_S->game.batch.draw(gameText.get(GameTexture.HEAD_S.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()-1f/2f)*(w/15) + (h-w), w/15*headS,w/15*headS)
+            HEAD_W->game.batch.draw(gameText.get(GameTexture.HEAD_W.ordinal), (x.toFloat()-1f/2f)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15*headS, w/15*headS)
+        }
+    }
+
+    fun drawNeck(x: Int, y: Int, w: Float, h: Float){
+        var t = gameText.get(GameTexture.BLOCK.ordinal)
+        var sizeX = neckXS;
+        var sizeY = 1f;
+        var sizedX = 1 - neckXS;
+        var sizedY = 0f;
+        if ((x == startX)&&(y==startY)){
+            when(map[x][y]){
+                NECK_NS -> t = gameText.get(GameTexture.NECK_NS.ordinal)
+                NECK_WE -> t = gameText.get(GameTexture.NECK_WE.ordinal)
+            }
+        }
+        else
+            when(map[x][y]) {
+                NECK_NS -> {
+                    t = gameText.get(GameTexture.NECK_NS.ordinal)
+                    sizeX = neckXS
+                    sizeY = 1f
+                    sizedX = 1 - neckXS;
+                    sizedY = 0f;
+                }
+                NECK_WE -> {
+                    t = gameText.get(GameTexture.NECK_WE.ordinal)
+                    sizeY = neckXS
+                    sizeX = 1f
+                    sizedY = 1 - neckXS;
+                    sizedX = 0f;
+                }
+                NECK_SE -> {
+                    t = gameText.get(GameTexture.NECK_SE.ordinal)
+                    sizeY = neckXS + (1 - neckXS) / 2;
+                    sizeX = 1f
+                    sizedY = 0f
+                    sizedX = 1 - neckXS;
+                }
+                NECK_SW -> {
+                    t = gameText.get(GameTexture.NECK_SW.ordinal)
+                    sizeX = neckXS + (1 - neckXS) / 2;
+                    sizeY = 1f
+                    sizedX = 0f;
+                    sizedY = -(1 - neckXS);
+                }
+                NECK_NE -> {
+                    t = gameText.get(GameTexture.NECK_NE.ordinal)
+                    sizeX = 1f;
+                    sizeY = neckXS + (1 - neckXS) / 2;
+                    sizedX = 1 - neckXS;
+                    sizedY = 1 - neckXS;
+                }
+                NECK_NW -> {
+                    t = gameText.get(GameTexture.NECK_NW.ordinal)
+                    sizeX = neckXS + (1 - neckXS) / 2
+                    sizeY = neckXS + (1 - neckXS) / 2
+                    sizedX = 0f;
+                    sizedY = 1 - neckXS;
+                }
+                else -> {
+                    print("$x $y ")
+                    println(map[x][y])
+
+                }
+            }
+        game.batch.draw(t, (x.toFloat()+1/2  + sizedX / 2f)*(w/15), (y.toFloat()+1/2 + sizedY / 2f)*(w/15) + (h-w), w/15*sizeX, w/15*sizeY)
     }
 
 
@@ -348,7 +534,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
      */
     fun control(){ //написана отдельная функция для управления, чтобы кнопка реагировала даже в случае, когда пользователь не отпускает палец
 
-        var swapSize = 50
+        val swapSize = 50
 
         if(swap) {
             if (Gdx.input.isTouched() && Gdx.input.getDeltaX() > swapSize) {
@@ -390,7 +576,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                     speed_x = 1
                 }
                 if (buttonsRect.get(Button.BACK.ordinal).contains(touchPos.x, touchPos.y)) {
-                    game.screen = MainMenuScreen(game)
+                    game.screen = LevelScreen(game)
                     Gdx.input.setInputProcessor(null) //фикс бага с невидимыми кнопками
                 }
             }
@@ -410,26 +596,24 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 }
                 State.LOSE -> {
                     if (buttonsRect.get(Button.OK.ordinal).contains(touchPos.x, touchPos.y)) {
-                        game.screen = MainMenuScreen(game)
+                        game.screen = GameScreen(game, level, swap);
                         Gdx.input.setInputProcessor(null)
                     }
                 }
                 State.WIN -> {
                     if (buttonsRect.get(Button.OK.ordinal).contains(touchPos.x, touchPos.y)) {
-                        game.screen = MainMenuScreen(game)
+                        game.Points += points;
+                        if(level < 2)
+                            game.screen = GameScreen(game, level + 1, swap);
+                        else game.screen = LevelScreen(game);
                         Gdx.input.setInputProcessor(null)
                     }
-                }
-                else -> {
-
                 }
             }
         }
         if(state == State.RUNNING) { //что такое 10?
             dy += speed_y
             dx += speed_x
-            print(dx)
-            println(dy)
             if (abs(dx) > 10){
                 headX += dx / 10
                 dx = 0
@@ -465,6 +649,20 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         }
         return true
     }
+
+    fun isHEAD(x: Int):Boolean{
+        if (x in 20..30)
+            return true
+        else
+            return false
+    }
+    fun isNECK(x: Int):Boolean{
+        if (x in 10..20)
+            return true
+        else
+            return false
+    }
+
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int) = false
 
