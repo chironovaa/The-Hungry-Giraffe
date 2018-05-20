@@ -410,7 +410,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                         if ((y > 0)&&isHEAD(map[x][y-1])){
                             map[x][y] = HEAD_N
                             if ((x == startX)&&(y-1 == startY)){
-                                map[x][y-1] = NECK_SE
+                                map[x][y-1] = NECK_NS
                                 print("1")
                             }
                             else
