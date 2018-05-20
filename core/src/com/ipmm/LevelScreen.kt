@@ -17,12 +17,14 @@ class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.Ges
     internal var texButtonLevel1: Texture
     internal var texButtonLevel2: Texture
     internal var texButtonLevel3: Texture
-    internal lateinit var textBackButton: Texture
+    internal var texButtonLevels: Texture
+    internal var textBackButton: Texture
     //internal var texLogo: Texture
-    internal lateinit var rectBackButton : Rectangle
+    internal var rectBackButton : Rectangle
     internal var level1Rect: Rectangle
     internal var level2Rect: Rectangle
     internal var level3Rect: Rectangle
+    internal var levelsRect: Rectangle
     internal var logoRect: Rectangle
     internal var width = 720
     internal var height = 1200
@@ -31,13 +33,15 @@ class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.Ges
         camera.setToOrtho(false, width.toFloat(), height.toFloat())
 
         texButtonLevel1 = Texture("level1.png")
-        texButtonLevel2 = Texture("level2.png")
-        texButtonLevel3 = Texture("level3.png")
+        texButtonLevel2 = Texture("level2_1.png")
+        texButtonLevel3 = Texture("level3_1.png")
+        texButtonLevels = Texture("levels-icon.png")
         textBackButton = Texture("back-icon.png")
         //texLogo = Texture("logo.png")
         level1Rect = Rectangle(36f, 406f, 200f, 200f)
         level2Rect = Rectangle(500f, 406f, 200f, 200f)
         level3Rect = Rectangle(275f, 250f, 200f, 200f)
+        levelsRect = Rectangle(225f, 700f,250f,250f)
         logoRect = Rectangle(104f, 500f, 512f, 512f)
         rectBackButton = Rectangle(100f, height - 100f, 100f, 100f)
     }
@@ -54,10 +58,15 @@ class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.Ges
         game.batch.begin()
         game.font.data.setScale(4f, 4f)
         //game.batch.draw(texLogo, logoRect.x, logoRect.y, logoRect.width, logoRect.height)
+        if (game.winLevel >= 1)
+            texButtonLevel2 = Texture("level2.png")
+        if (game.winLevel >= 2)
+            texButtonLevel3 = Texture("level3.png")
         game.batch.draw(textBackButton, rectBackButton.x, rectBackButton.y, rectBackButton.width, rectBackButton.height)
         game.batch.draw(texButtonLevel1, level1Rect.x, level1Rect.y, level1Rect.width, level1Rect.height)
         game.batch.draw(texButtonLevel3, level2Rect.x, level2Rect.y, level2Rect.width, level2Rect.height)
         game.batch.draw(texButtonLevel2, level3Rect.x, level3Rect.y, level3Rect.width, level3Rect.height)
+        game.batch.draw(texButtonLevels, levelsRect.x, levelsRect.y, levelsRect.width, levelsRect.height)
         game.batch.end()
 
     }
@@ -94,13 +103,13 @@ class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.Ges
             Gdx.input.setInputProcessor(null)
             dispose()
         }
-        if (level2Rect.contains(touchPos.x, touchPos.y)) {
+        if (level2Rect.contains(touchPos.x, touchPos.y) && game.winLevel >= 2) {
             var gs : GameScreen = GameScreen(game, 2, OptionScreen.settings.swap.not())
             game.screen = gs
             Gdx.input.setInputProcessor(null)
             dispose()
         }
-        if (level3Rect.contains(touchPos.x, touchPos.y)) {
+        if (level3Rect.contains(touchPos.x, touchPos.y) && game.winLevel >= 1) {
             var gs : GameScreen = GameScreen(game, 1, OptionScreen.settings.swap.not())
             game.screen = gs
             Gdx.input.setInputProcessor(null)

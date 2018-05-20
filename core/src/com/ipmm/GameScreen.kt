@@ -602,7 +602,8 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 }
                 State.WIN -> {
                     if (buttonsRect.get(Button.OK.ordinal).contains(touchPos.x, touchPos.y)) {
-                        game.Points += points;
+                        game.Points += points
+                        game.winLevel = level + 1
                         if(level < 2)
                             game.screen = GameScreen(game, level + 1, swap);
                         else game.screen = LevelScreen(game);
