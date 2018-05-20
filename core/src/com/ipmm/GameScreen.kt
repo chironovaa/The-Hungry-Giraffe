@@ -354,15 +354,16 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 APPLE -> {
                     points++
                 }
-                EXIT -> {
+                /*EXIT -> {
                     state = State.WIN
-                }
+                }*/
             }
 
             when(map[x + 1][y])
             {
                 EXIT -> {
-                    state = State.WIN
+                    if (speed_x > 0)
+                        state = State.WIN
                 }
             }
 
