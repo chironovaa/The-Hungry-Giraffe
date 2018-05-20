@@ -431,6 +431,8 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         val h = height.toFloat()
         for (x in 0 until n){
             for (y in 0 until m){
+                if (isHEAD(map[x][y]))
+                    drawHead(x,y,w,h)
                 if (map[x][y] == BLOCK)
                     game.batch.draw(gameText.get(GameTexture.BLOCK.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
                 if (map[x][y] == EXIT)
@@ -443,12 +445,6 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 //    game.batch.draw(gameText.get(GameTexture.GIRAFFEHEAD.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
                 if (isNECK(map[x][y]))
                     drawNeck(x,y,w,h)
-
-                if (isHEAD(map[x][y])){
-                    drawHead(x,y,w ,h)
-                }
-
-
             }
         }
     }
