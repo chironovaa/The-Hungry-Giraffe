@@ -47,7 +47,7 @@ enum class Message {
 }
 
 enum class GameTexture {
-    WALL, APPLE, GIRAFFEHEAD, NECK_NS , NECK_WE , NECK_SE ,NECK_SW , NECK_NE ,NECK_NW , BLOCK, EXIT, HEAD_N, HEAD_W, HEAD_S, HEAD_E
+    WALL, APPLE, GIRAFFEHEAD, NECK_NS , NECK_WE , NECK_SE ,NECK_SW , NECK_NE ,NECK_NW , BLOCK_0, BLOCK_11,BLOCK_12,BLOCK_13,BLOCK_14,BLOCK_21,BLOCK_22,BLOCK_23,BLOCK_24,BLOCK_25,BLOCK_26,BLOCK_31,BLOCK_32,BLOCK_33,BLOCK_34,BLOCK_4, EXIT, HEAD_N, HEAD_W, HEAD_S, HEAD_E
 }
 
 class GameScreen(internal val game: MainActivity, internal val level : Int, internal val swap : Boolean) : Screen, InputProcessor {
@@ -200,7 +200,24 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         gameText.add(GameTexture.NECK_SW.ordinal, Texture("neck_sw.png"))
         gameText.add(GameTexture.NECK_NE.ordinal, Texture("neck_ne.png"))
         gameText.add(GameTexture.NECK_NW.ordinal, Texture("neck_nw.png"))
-        gameText.add(GameTexture.BLOCK.ordinal, Texture("block_green.png"))
+
+        gameText.add(GameTexture.BLOCK_0.ordinal, Texture("block.png"))
+        gameText.add(GameTexture.BLOCK_11.ordinal, Texture("block_11.png"))
+        gameText.add(GameTexture.BLOCK_12.ordinal, Texture("block_12.png"))
+        gameText.add(GameTexture.BLOCK_13.ordinal, Texture("block_13.png"))
+        gameText.add(GameTexture.BLOCK_14.ordinal, Texture("block_14.png"))
+        gameText.add(GameTexture.BLOCK_21.ordinal, Texture("block_21.png"))
+        gameText.add(GameTexture.BLOCK_22.ordinal, Texture("block_22.png"))
+        gameText.add(GameTexture.BLOCK_23.ordinal, Texture("block_23.png"))
+        gameText.add(GameTexture.BLOCK_24.ordinal, Texture("block_24.png"))
+        gameText.add(GameTexture.BLOCK_25.ordinal, Texture("block_25.png"))
+        gameText.add(GameTexture.BLOCK_26.ordinal, Texture("block_26.png"))
+        gameText.add(GameTexture.BLOCK_31.ordinal, Texture("block_31.png"))
+        gameText.add(GameTexture.BLOCK_32.ordinal, Texture("block_32.png"))
+        gameText.add(GameTexture.BLOCK_33.ordinal, Texture("block_33.png"))
+        gameText.add(GameTexture.BLOCK_34.ordinal, Texture("block_34.png"))
+        gameText.add(GameTexture.BLOCK_4.ordinal, Texture("block_4.png"))
+
         gameText.add(GameTexture.EXIT.ordinal, Texture("fon.png"))
         gameText.add(GameTexture.HEAD_N.ordinal, Texture("head_n.png"))
         gameText.add(GameTexture.HEAD_W.ordinal, Texture("head_w.png"))
@@ -435,7 +452,8 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 if (isHEAD(map[x][y]))
                     drawHead(x,y,w,h)
                 if (map[x][y] == BLOCK)
-                    game.batch.draw(gameText.get(GameTexture.BLOCK.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
+                    drawBlock(x,y,w,h)
+                    //game.batch.draw(gameText.get(GameTexture.BLOCK.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
                 if (map[x][y] == EXIT)
                     game.batch.draw(gameText.get(GameTexture.EXIT.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
                 //if (map[x][y] == NECK)
@@ -462,7 +480,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
     }
 
     fun drawNeck(x: Int, y: Int, w: Float, h: Float){
-        var t = gameText.get(GameTexture.BLOCK.ordinal)
+        var t = gameText.get(GameTexture.NECK_NS.ordinal)
         var sizeX = neckXS;
         var sizeY = 1f;
         var sizedX = 1 - neckXS;
@@ -664,6 +682,208 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
             return true
         else
             return false
+    }
+
+    fun drawBlock(x: Int, y: Int, w:Float, h:Float){
+        var t = gameText.get(GameTexture.BLOCK_0.ordinal)
+        when(x){
+            0-> when(y){
+                0->{
+                    when(map[x+1][y]){
+                        BLOCK-> when (map[x][y+1]){
+                            BLOCK -> t = gameText.get(GameTexture.BLOCK_24.ordinal)
+                            else ->  t = gameText.get(GameTexture.BLOCK_11.ordinal)
+                        }
+                        else -> when (map[x][y+1]){
+                            BLOCK -> t = gameText.get(GameTexture.BLOCK_14.ordinal)
+                        }
+                    }
+                }
+                m-1->{
+                    when(map[x+1][y]){
+                        BLOCK-> when (map[x][y-1]){
+                            BLOCK -> t = gameText.get(GameTexture.BLOCK_21.ordinal)
+                            else ->  t = gameText.get(GameTexture.BLOCK_12.ordinal)
+                        }
+                        else -> when (map[x][y-1]){
+                            BLOCK -> t = gameText.get(GameTexture.BLOCK_11.ordinal)
+                        }
+                    }
+                }
+                else->{
+                    when(map[x+1][y]){
+                        BLOCK -> when (map[x][y-1]){
+                            BLOCK -> when(map[x][y+1]){
+                                BLOCK -> t = gameText.get(GameTexture.BLOCK_34.ordinal)
+                                else -> t = gameText.get(GameTexture.BLOCK_21.ordinal)
+                            }
+                            else -> when(map[x][y+1]){
+                                BLOCK -> t = gameText.get(GameTexture.BLOCK_24.ordinal)
+                                else -> t = gameText.get(GameTexture.BLOCK_11.ordinal)
+                            }
+                        }
+                        else -> when (map[x][y-1]){
+                            BLOCK -> when(map[x][y+1]){
+                                BLOCK -> t = gameText.get(GameTexture.BLOCK_26.ordinal)
+                                else -> t = gameText.get(GameTexture.BLOCK_12.ordinal)
+                            }
+                            else -> when(map[x][y+1]){
+                                BLOCK -> t = gameText.get(GameTexture.BLOCK_14.ordinal)
+                            }
+                        }
+                    }
+                }
+            }
+            n-1 -> {
+                when(y){
+                    0->when(map[x-1][y]){
+                        BLOCK-> when (map[x][y+1]){
+                            BLOCK -> t = gameText.get(GameTexture.BLOCK_23.ordinal)
+                            else ->  t = gameText.get(GameTexture.BLOCK_13.ordinal)
+                        }
+                        else -> when (map[x][y+1]){
+                            BLOCK -> t = gameText.get(GameTexture.BLOCK_14.ordinal)
+                        }
+                    }
+                    m-1->when(map[x-1][y]){
+                        BLOCK-> when (map[x][y-1]){
+                            BLOCK -> t = gameText.get(GameTexture.BLOCK_22.ordinal)
+                            else ->  t = gameText.get(GameTexture.BLOCK_13.ordinal)
+                        }
+                        else -> when (map[x][y+1]){
+                            BLOCK -> t = gameText.get(GameTexture.BLOCK_12.ordinal)
+                        }
+                    }
+                    else -> when(map[x-1][y]){
+                        BLOCK -> when (map[x][y-1]){
+                            BLOCK -> when(map[x][y+1]){
+                                BLOCK -> t = gameText.get(GameTexture.BLOCK_32.ordinal)
+                                else -> t = gameText.get(GameTexture.BLOCK_22.ordinal)
+                            }
+                            else -> when(map[x][y+1]){
+                                BLOCK -> t = gameText.get(GameTexture.BLOCK_23.ordinal)
+                                else -> t = gameText.get(GameTexture.BLOCK_13.ordinal)
+                            }
+                        }
+                        else -> when (map[x][y-1]){
+                            BLOCK -> when(map[x][y+1]){
+                                BLOCK -> t = gameText.get(GameTexture.BLOCK_26.ordinal)
+                                else -> t = gameText.get(GameTexture.BLOCK_12.ordinal)
+                            }
+                            else -> when(map[x][y+1]){
+                                BLOCK -> t = gameText.get(GameTexture.BLOCK_23.ordinal)
+                            }
+                        }
+                    }
+                }
+            }
+            else->{
+                when(y){
+                    0->{
+                        when(map[x][y+1]){
+                            BLOCK -> when(map[x+1][y]){
+                                BLOCK -> when(map[x-1][y]){
+                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_33.ordinal)
+                                    else -> t = gameText.get(GameTexture.BLOCK_24.ordinal)
+                                }
+                                else -> when(map[x-1][y]){
+                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_23.ordinal)
+                                    else -> t = gameText.get(GameTexture.BLOCK_14.ordinal)
+                                }
+                            }
+                            else -> when(map[x+1][y]){
+                                BLOCK -> when(map[x-1][y]){
+                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_25.ordinal)
+                                    else -> t = gameText.get(GameTexture.BLOCK_11.ordinal)
+                                }
+                                else -> when(map[x-1][y]){
+                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_13.ordinal)
+                                }
+                            }
+                        }
+                    }
+                    m-1->{
+
+                    }
+                    else->{
+                        when (map[x-1][y]){
+                            BLOCK -> {
+                                when (map[x+1][y]){
+                                    BLOCK ->{
+                                        when (map[x][y+1]){
+                                            BLOCK -> {
+                                                when (map[x][y-1]){
+                                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_4.ordinal)
+                                                    else -> t = gameText.get(GameTexture.BLOCK_33.ordinal)
+                                                }
+                                            }
+                                            else -> {
+                                                when (map[x][y-1]){
+                                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_31.ordinal)
+                                                    else -> t = gameText.get(GameTexture.BLOCK_25.ordinal)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else -> {
+                                        when (map[x][y+1]){
+                                            BLOCK -> {
+                                                when (map[x][y-1]){
+                                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_32.ordinal)
+                                                    else -> t = gameText.get(GameTexture.BLOCK_23.ordinal)
+                                                }
+                                            }
+                                            else -> {
+                                                when (map[x][y-1]){
+                                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_22.ordinal)
+                                                    else -> t = gameText.get(GameTexture.BLOCK_13.ordinal)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else -> {
+                                when (map[x+1][y]){
+                                    BLOCK ->{
+                                        when (map[x][y+1]){
+                                            BLOCK -> {
+                                                when (map[x][y-1]){
+                                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_34.ordinal)
+                                                    else -> t = gameText.get(GameTexture.BLOCK_24.ordinal)
+                                                }
+                                            }
+                                            else -> {
+                                                when (map[x][y-1]){
+                                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_21.ordinal)
+                                                    else -> t = gameText.get(GameTexture.BLOCK_11.ordinal)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else -> {
+                                        when (map[x][y+1]){
+                                            BLOCK -> {
+                                                when (map[x][y-1]) {
+                                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_26.ordinal)
+                                                    else -> t = gameText.get(GameTexture.BLOCK_14.ordinal)
+                                                }
+                                            }
+                                            else -> {
+                                                when (map[x][y-1]){
+                                                    BLOCK -> t = gameText.get(GameTexture.BLOCK_12.ordinal)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        game.batch.draw(t, (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
     }
 
 
