@@ -18,23 +18,28 @@ class OptionScreen(internal val game: MainActivity) : Screen, InputProcessor {
     internal var camera: OrthographicCamera
     internal var width = 720
     internal var height = 1200
+
     internal lateinit var textWall: Texture
     internal lateinit var textBackButton: Texture
-    internal lateinit var rectBackButton : Rectangle
     internal lateinit var textLanduage: Texture
     internal lateinit var textOn: Texture
     internal lateinit var textOff: Texture
     internal lateinit var textOnBlack: Texture
     internal lateinit var textOffBlack: Texture
     internal lateinit var textControlText: Texture
-    internal lateinit var rectControlText: Rectangle
-    internal lateinit var rectControl: Rectangle
     internal lateinit var textSoundsText: Texture
+    internal lateinit var textLanguageText: Texture
+    internal lateinit var textSettings: Texture
+
     internal lateinit var rectSoundsText: Rectangle
     internal lateinit var rectSounds: Rectangle
-    internal lateinit var textLanguageText: Texture
     internal lateinit var rectLanguageText: Rectangle
+    internal lateinit var rectBackButton : Rectangle
     internal lateinit var rectLanguage: Rectangle
+    internal lateinit var rectControlText: Rectangle
+    internal lateinit var rectControl: Rectangle
+    internal lateinit var rectSettings: Rectangle
+
     internal var sounds: Boolean = false
     internal var language: Boolean = true
     internal var is_action_control: Boolean = true
@@ -72,6 +77,7 @@ class OptionScreen(internal val game: MainActivity) : Screen, InputProcessor {
         //game.batch.draw(textWall, 0f, 0f, width.toFloat(), height.toFloat())
         game.batch.draw(textBackButton, rectBackButton.x, rectBackButton.y, rectBackButton.width, rectBackButton.height)
         game.batch.draw(textControlText , rectControlText.x, rectControlText.y, rectControlText.width, rectControlText.height)
+        game.batch.draw(textSettings, rectSettings.x, rectSettings.y, rectSettings.width, rectSettings.height)
 
         if (settings.swap)
             if (is_action_control)
@@ -124,18 +130,22 @@ class OptionScreen(internal val game: MainActivity) : Screen, InputProcessor {
         textControlText =Texture("joystick-option-icon.png")
         textSoundsText =Texture("sounds-option-icon.png")
         textLanguageText =Texture("language-option-icon.png")
-
+        textSettings = Texture("settings-icon.png")
         //textBack =Texture("back-option.png")
     }
 
     fun createRectangles(){
         rectBackButton = Rectangle(100f, height - 100f, 100f, 100f)
-        rectControlText= Rectangle(0f, height - 200f - icon_h, 2 * icon_w, icon_h)
-        rectControl= Rectangle(width - icon_w, height - 200f - icon_h, icon_w, icon_h)
-        rectSoundsText= Rectangle(0f, height - 200f - 2 * icon_h, 2 * icon_w, icon_h)
-        rectSounds= Rectangle(width - icon_w, height - 200f - 2 * icon_h, icon_w, icon_h)
-        rectLanguageText= Rectangle(0f, height - 200f - 3 * icon_h, 2 * icon_w, icon_h)
-        rectLanguage= Rectangle(width - icon_w, height - 200f - 3 * icon_h, icon_w, icon_h)
+        rectSettings = Rectangle(150f, height - 350f, 2*icon_w, icon_h)
+
+        rectControlText= Rectangle(0f, height - 200f - icon_h - 200f, 2*icon_w, icon_h)
+        rectControl= Rectangle(width - icon_w, height - 200f - icon_h - 200f, icon_w, icon_h)
+
+        rectSoundsText= Rectangle(0f, height - 140f - 2 * icon_h - 200f, icon_w, icon_h/2)
+        rectSounds= Rectangle(width - icon_w, height - 200f - 2 * icon_h - 200f, icon_w, icon_h)
+
+        rectLanguageText= Rectangle(0f, height - 200f - 3 * icon_h - 200f, 2*icon_w, icon_h)
+        rectLanguage= Rectangle(width - icon_w, height - 200f - 3 * icon_h - 200f, icon_w, icon_h)
     }
 
     fun control(){ //написана отдельная функция для управления, чтобы кнопка реагировала даже в случае, когда пользователь не отпускает палец
