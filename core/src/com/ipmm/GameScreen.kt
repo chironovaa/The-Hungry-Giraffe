@@ -393,7 +393,8 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                         if ((y > 0)&&isHEAD(map[x][y-1])){
                             map[x][y] = HEAD_N
                             if ((x == startX)&&(y-1 == startY)){
-                                map[x][y-1] = NECK_NS
+                                map[x][y-1] = NECK_SE
+                                print("1")
                             }
                             else
                                 when(map[x][y-1]){
@@ -470,6 +471,10 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
             when(map[x][y]){
                 NECK_NS -> t = gameText.get(GameTexture.NECK_NS.ordinal)
                 NECK_WE -> t = gameText.get(GameTexture.NECK_WE.ordinal)
+                NECK_NW -> t = gameText.get(GameTexture.NECK_NW.ordinal)
+                NECK_NE -> t = gameText.get(GameTexture.NECK_NE.ordinal)
+                NECK_SW -> t = gameText.get(GameTexture.NECK_SW.ordinal)
+                NECK_SE -> t = gameText.get(GameTexture.NECK_SE.ordinal)
             }
         }
         else
