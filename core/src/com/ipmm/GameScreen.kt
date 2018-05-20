@@ -56,6 +56,8 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
     val startX = 1
     val startY = 0
 
+    var flag_button = true; //специальный флаг для того чтобы нажатия кнопки не считывались слишком часто
+
     val mapW = width //Ширина и высота лабиринта (в пикселях)
     val mapH = width //Не используются, т.к. я еще не исправила drawMap()
     val n = 15 //Высота лабиринта (в клетках)
@@ -469,20 +471,32 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
             camera.unproject(touchPos) //важная функция для того, чтобы подгонять координаты приложения в разных телефонах
             if(state == State.RUNNING){
                 if (buttonsRect.get(Button.UPSTICKER.ordinal).contains(touchPos.x, touchPos.y)) {
-                    speed_y = 1
-                    speed_x = 0
+                    if ((speed_x == 0) && (speed_y == 0)){
+                        speed_y = 1
+                        speed_x = 0
+                    }
                 }
                 if (buttonsRect.get(Button.DOWNSTICKER.ordinal).contains(touchPos.x, touchPos.y)) {
-                    speed_y = -1
-                    speed_x = 0
+                    //speed_y = -1
+                    //speed_x = 0
                 }
                 if (buttonsRect.get(Button.LEFTSTICKER.ordinal).contains(touchPos.x, touchPos.y)) {
-                    speed_y = 0
-                    speed_x = -1
+                    if (flag_button){
+                        val vx = speed_x
+                        val vy = speed_y
+                        speed_y = vx
+                        speed_x = -vy
+                        flag_button = false
+                    }
                 }
                 if (buttonsRect.get(Button.RIGHTSTICKER.ordinal).contains(touchPos.x, touchPos.y)) {
-                    speed_y = 0
-                    speed_x = 1
+                    if (flag_button){
+                        val vx = speed_x
+                        val vy = speed_y
+                        speed_y = -vx
+                        speed_x = vy
+                        flag_button = false
+                    }
                 }
                 if (buttonsRect.get(Button.BACK.ordinal).contains(touchPos.x, touchPos.y)) {
                     game.screen = LevelScreen(game)
@@ -526,12 +540,14 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
             if (abs(dx) > 10){
                 headX += dx / 10
                 dx = 0
+                flag_button = true
                 if ((headX < 0)||(headX> m-1)) //выход за грань реальности
                     state = State.LOSE
             }
             if (abs(dy) > 10){
                 headY += dy / 10
                 dy = 0
+                flag_button = true
                 if ((headY < 0)||(headY> n-1))
                     state = State.LOSE
             }
