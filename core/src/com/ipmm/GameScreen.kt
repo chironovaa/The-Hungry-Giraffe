@@ -17,10 +17,7 @@ import java.lang.Math.abs
  * Created by Oleg on 11.03.2018.
  */
 
-//val NECK_N = 11
-//val NECK_E = 12
-val NECK_S = 13
-val NECK_W = 14
+
 val NECK_NS = 15
 val NECK_WE = 16
 val NECK_NW = 17
@@ -192,12 +189,14 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         gameText.add(GameTexture.WALL.ordinal, Texture("fon.png"))
         gameText.add(GameTexture.APPLE.ordinal, Texture("apple.png"))
         gameText.add(GameTexture.GIRAFFEHEAD.ordinal, Texture("giraffe.png"))
-        gameText.add(GameTexture.NECK_NS.ordinal, Texture("neck_ns.png")) //вертикальная текстура шеи
+
+        gameText.add(GameTexture.NECK_NS.ordinal, Texture("neck_ns.png"))
         gameText.add(GameTexture.NECK_WE.ordinal, Texture("neck_we.png"))
         gameText.add(GameTexture.NECK_SE.ordinal, Texture("neck_se.png"))
         gameText.add(GameTexture.NECK_SW.ordinal, Texture("neck_sw.png"))
         gameText.add(GameTexture.NECK_NE.ordinal, Texture("neck_ne.png"))
         gameText.add(GameTexture.NECK_NW.ordinal, Texture("neck_nw.png"))
+
         gameText.add(GameTexture.BLOCK.ordinal, Texture("block.png"))
         gameText.add(GameTexture.EXIT.ordinal, Texture("exit.png"))
         gameText.add(GameTexture.HEAD_N.ordinal, Texture("head_n.png"))
@@ -330,18 +329,10 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
 
         if (state != State.LOSE){
             when(map[x][y]){
-                BLOCK -> {
-                    state = State.LOSE
-                }
-                in 10..20 -> {
-                    state = State.LOSE
-                }
-                APPLE -> {
-                    points++
-                }
-                EXIT -> {
-                    state = State.WIN
-                }
+                BLOCK -> state = State.LOSE
+                in 10..20 -> state = State.LOSE
+                APPLE -> points++
+                EXIT -> state = State.WIN
             }
             if (!isHEAD(map[x][y])){
                 if ((x > 0)&&isHEAD(map[x - 1][y])){
@@ -387,10 +378,6 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                                     HEAD_S->map[x][y+1] = NECK_NS
                                 }
                             }
-                            else{
-                                map[x][y] = HEAD_S
-                            }
-
                         }
                     }
                 }
@@ -408,19 +395,13 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         for (x in 0 until n){
             for (y in 0 until m){
                 if (map[x][y] == BLOCK)
-                    game.batch.draw(gameText.get(GameTexture.BLOCK.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
+                    game.batch.draw(gameText.get(GameTexture.BLOCK.ordinal), (x.toFloat())*(w/15), (y.toFloat())*(w/15) + (h-w), w/15, w/15)
                 if (map[x][y] == EXIT)
-                    game.batch.draw(gameText.get(GameTexture.EXIT.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
-                //if (map[x][y] == NECK)
-                 //   game.batch.draw(gameText.get(GameTexture.NECK.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15)+ (h-w), w/15, w/15)
+                    game.batch.draw(gameText.get(GameTexture.EXIT.ordinal), (x.toFloat())*(w/15), (y.toFloat())*(w/15) + (h-w), w/15, w/15)
                 if (map[x][y] == APPLE)
-                    game.batch.draw(gameText.get(GameTexture.APPLE.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15)+ (h-w), w/15, w/15)
-               // if (map[x][y] == HEAD)
-                //    game.batch.draw(gameText.get(GameTexture.GIRAFFEHEAD.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
-                if (isHEAD(map[x][y])){
+                    game.batch.draw(gameText.get(GameTexture.APPLE.ordinal), (x.toFloat())*(w/15), (y.toFloat())*(w/15)+ (h-w), w/15, w/15)
+                if (isHEAD(map[x][y]))
                     drawHead(x,y,w,h)
-                }
-
                 if (isNECK(map[x][y]))
                     drawNeck(x,y,w,h)
             }
@@ -428,9 +409,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
     }
 
     fun drawHead(x: Int, y: Int, w: Float, h: Float){
-        //val x = xx+2
         when(map[x][y]){
-
             HEAD_N->game.batch.draw(gameText.get(GameTexture.HEAD_N.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
             HEAD_E->game.batch.draw(gameText.get(GameTexture.HEAD_E.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
             HEAD_S->game.batch.draw(gameText.get(GameTexture.HEAD_S.ordinal), (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
@@ -454,11 +433,6 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 NECK_SW-> t = gameText.get(GameTexture.NECK_SW.ordinal)
                 NECK_NE-> t = gameText.get(GameTexture.NECK_NE.ordinal)
                 NECK_NW-> t = gameText.get(GameTexture.NECK_NW.ordinal)
-                else -> {
-                    print("$x $y ")
-                    println(map[x][y])
-
-                }
             }
         game.batch.draw(t, (x.toFloat()+1/2)*(w/15), (y.toFloat()+1/2)*(w/15) + (h-w), w/15, w/15)
     }
