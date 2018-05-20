@@ -365,8 +365,6 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         if ((x <0)||(y <0)||(x > m-1)||(y > n-1) || (x + 1 <0)||(y + 1 <0)||(x + 1> m-1)||(y+1 > n-1) )
             state = State.LOSE
 
-
-
         if (state != State.LOSE){
             when(map[x][y]){
                 BLOCK -> {
@@ -391,7 +389,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 }
             }
 
-            if (!isHEAD(map[x][y])){
+            if (!isHEAD(map[x][y]) && state != State.LOSE){
                 if ((x > 0)&&isHEAD(map[x - 1][y])){
                     map[x][y] = HEAD_E
                     if ((x-1 == startX)&&(y == startY)){
@@ -549,7 +547,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
      */
     fun control(){ //написана отдельная функция для управления, чтобы кнопка реагировала даже в случае, когда пользователь не отпускает палец
 
-        val swapSize = 50
+        val swapSize = 30
 
         if(swap) {
             if (Gdx.input.isTouched() && Gdx.input.getDeltaX() > swapSize) {
@@ -573,7 +571,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
             val touchPos = Vector3()
             touchPos.set(Gdx.input.getX(0).toFloat(), Gdx.input.getY(0).toFloat(), 0f)
             camera.unproject(touchPos) //важная функция для того, чтобы подгонять координаты приложения в разных телефонах
-            if(state == State.RUNNING){
+            if(state == State.RUNNING && !swap){
                 if (buttonsRect.get(Button.UPSTICKER.ordinal).contains(touchPos.x, touchPos.y) && game.direction != DOWN) {
                     speed_y = 1
                     speed_x = 0
