@@ -37,6 +37,10 @@ val BLOCK = 3
 val APPLE = 4
 val EXIT = 5
 
+val UP = 100
+val DOWN = 101
+val LEFT = 102
+val RIGHT = 103
 
 enum class Button {
     UPSTICKER, LEFTSTICKER, RIGHTSTICKER, DOWNSTICKER, BODY,  BACK, RESUME, QUIT, OK
@@ -101,6 +105,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         mapCreate(level) //функция для конструирования карты
         loadTextures()
         createRectangles()
+        game.direction = 0
     }
 
     /**
@@ -338,9 +343,11 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 //pickup()
             }
             State.LOSE -> {
+                game.direction = 0
                 game.batch.draw(messagesText.get(Message.LOSEMESSAGE.ordinal), 260f, 500f, 200f, 200f)
             }
             State.WIN -> {
+                game.direction = 0
                 game.batch.draw(messagesText.get(Message.WINMEESAGE.ordinal), 260f, 500f, 200f, 200f)
             }
         /*else -> {
@@ -567,21 +574,25 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
             touchPos.set(Gdx.input.getX(0).toFloat(), Gdx.input.getY(0).toFloat(), 0f)
             camera.unproject(touchPos) //важная функция для того, чтобы подгонять координаты приложения в разных телефонах
             if(state == State.RUNNING){
-                if (buttonsRect.get(Button.UPSTICKER.ordinal).contains(touchPos.x, touchPos.y)) {
+                if (buttonsRect.get(Button.UPSTICKER.ordinal).contains(touchPos.x, touchPos.y) && game.direction != DOWN) {
                     speed_y = 1
                     speed_x = 0
+                    game.direction = UP
                 }
-                if (buttonsRect.get(Button.DOWNSTICKER.ordinal).contains(touchPos.x, touchPos.y)) {
+                if (buttonsRect.get(Button.DOWNSTICKER.ordinal).contains(touchPos.x, touchPos.y) && game.direction != UP) {
                     speed_y = -1
                     speed_x = 0
+                    game.direction = DOWN
                 }
-                if (buttonsRect.get(Button.LEFTSTICKER.ordinal).contains(touchPos.x, touchPos.y)) {
+                if (buttonsRect.get(Button.LEFTSTICKER.ordinal).contains(touchPos.x, touchPos.y) && game.direction != RIGHT) {
                     speed_y = 0
                     speed_x = -1
+                    game.direction = LEFT
                 }
-                if (buttonsRect.get(Button.RIGHTSTICKER.ordinal).contains(touchPos.x, touchPos.y)) {
+                if (buttonsRect.get(Button.RIGHTSTICKER.ordinal).contains(touchPos.x, touchPos.y) && game.direction != LEFT) {
                     speed_y = 0
                     speed_x = 1
+                    game.direction = RIGHT
                 }
                 if (buttonsRect.get(Button.BACK.ordinal).contains(touchPos.x, touchPos.y)) {
                     game.screen = LevelScreen(game)
