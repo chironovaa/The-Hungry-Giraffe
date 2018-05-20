@@ -485,66 +485,54 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
         var sizeY = 1f;
         var sizedX = 1 - neckXS;
         var sizedY = 0f;
-        if ((x == startX)&&(y==startY)){
-            when(map[x][y]){
-                NECK_NS -> t = gameText.get(GameTexture.NECK_NS.ordinal)
-                NECK_WE -> t = gameText.get(GameTexture.NECK_WE.ordinal)
-                NECK_NW -> t = gameText.get(GameTexture.NECK_NW.ordinal)
-                NECK_NE -> t = gameText.get(GameTexture.NECK_NE.ordinal)
-                NECK_SW -> t = gameText.get(GameTexture.NECK_SW.ordinal)
-                NECK_SE -> t = gameText.get(GameTexture.NECK_SE.ordinal)
-            }
-        }
-        else
-            when(map[x][y]) {
-                NECK_NS -> {
-                    t = gameText.get(GameTexture.NECK_NS.ordinal)
-                    sizeX = neckXS
-                    sizeY = 1f
-                    sizedX = 1 - neckXS;
-                    sizedY = 0f;
-                }
-                NECK_WE -> {
-                    t = gameText.get(GameTexture.NECK_WE.ordinal)
-                    sizeY = neckXS
-                    sizeX = 1f
-                    sizedY = 1 - neckXS;
-                    sizedX = 0f;
-                }
-                NECK_SE -> {
-                    t = gameText.get(GameTexture.NECK_SE.ordinal)
-                    sizeY = neckXS + (1 - neckXS) / 2;
-                    sizeX = 1f
-                    sizedY = 0f
-                    sizedX = 1 - neckXS;
-                }
-                NECK_SW -> {
-                    t = gameText.get(GameTexture.NECK_SW.ordinal)
-                    sizeX = neckXS + (1 - neckXS) / 2;
-                    sizeY = 1f
-                    sizedX = 0f;
-                    sizedY = -(1 - neckXS);
-                }
-                NECK_NE -> {
-                    t = gameText.get(GameTexture.NECK_NE.ordinal)
-                    sizeX = 1f;
-                    sizeY = neckXS + (1 - neckXS) / 2;
-                    sizedX = 1 - neckXS;
-                    sizedY = 1 - neckXS;
-                }
-                NECK_NW -> {
-                    t = gameText.get(GameTexture.NECK_NW.ordinal)
-                    sizeX = neckXS + (1 - neckXS) / 2
-                    sizeY = neckXS + (1 - neckXS) / 2
-                    sizedX = 0f;
-                    sizedY = 1 - neckXS;
-                }
-                else -> {
-                    print("$x $y ")
-                    println(map[x][y])
-
-                }
-            }
+           when(map[x][y]) {
+               NECK_NS -> {
+                   t = gameText.get(GameTexture.NECK_NS.ordinal)
+                   sizeX = neckXS
+                   sizeY = 1f
+                   sizedX = 1 - neckXS;
+                   sizedY = 0f;
+               }
+               NECK_WE -> {
+                   t = gameText.get(GameTexture.NECK_WE.ordinal)
+                   sizeY = neckXS
+                   sizeX = 1f
+                   sizedY = 1 - neckXS;
+                   sizedX = 0f;
+               }
+               NECK_SE -> {
+                   t = gameText.get(GameTexture.NECK_SE.ordinal)
+                   sizeY = neckXS + (1 - neckXS) / 2;
+                   sizeX = 1f
+                   sizedY = 0f
+                   sizedX = 1 - neckXS;
+               }
+               NECK_SW -> {
+                   t = gameText.get(GameTexture.NECK_SW.ordinal)
+                   sizeX = neckXS + (1 - neckXS) / 2;
+                   sizeY = 1f
+                   sizedX = 0f;
+                   sizedY = -(1 - neckXS);
+               }
+               NECK_NE -> {
+                   t = gameText.get(GameTexture.NECK_NE.ordinal)
+                   sizeX = 1f;
+                   sizeY = neckXS + (1 - neckXS) / 2;
+                   sizedX = 1 - neckXS;
+                   sizedY = 1 - neckXS;
+               }
+               NECK_NW -> {
+                   t = gameText.get(GameTexture.NECK_NW.ordinal)
+                   sizeX = neckXS + (1 - neckXS) / 2
+                   sizeY = neckXS + (1 - neckXS) / 2
+                   sizedX = 0f;
+                   sizedY = 1 - neckXS;
+               }
+               else -> {
+                   print("$x $y ")
+                   println(map[x][y])
+               }
+           }
         game.batch.draw(t, (x.toFloat()+1/2  + sizedX / 2f)*(w/15), (y.toFloat()+1/2 + sizedY / 2f)*(w/15) + (h-w), w/15*sizeX, w/15*sizeY)
     }
 
