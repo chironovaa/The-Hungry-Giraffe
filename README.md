@@ -50,4 +50,4 @@
 
 Лицензия
 ----------
-Этот проект лицензирован в соответствии с [BSD License](https://github.com/chironovaa/The-Hungry-Giraffe/blob/master/LICENSE.md)
+Этот продукт лицензирован в соответствии с [BSD License](https://github.com/chironovaa/The-Hungry-Giraffe/blob/master/LICENSE.md)
