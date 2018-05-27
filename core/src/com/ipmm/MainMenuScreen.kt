@@ -24,10 +24,12 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
     internal var texButtonStart: Texture
     internal var texButtonOption: Texture
     internal var texButtonAbout: Texture
+    internal var texButtonScript: Texture
     internal var texLogo: Texture
     internal var startRect: Rectangle
     internal var optionRect: Rectangle
     internal var aboutRect: Rectangle
+    internal var scriptRect: Rectangle
     internal var logoRect: Rectangle
     internal var width = 720
     internal var height = 1200
@@ -39,11 +41,13 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
         texButtonStart = Texture("play-icon.png")
         texButtonOption = Texture("option-icon.png")
         texButtonAbout = Texture("about-icon.png")
+        texButtonScript = Texture("script_icon.png")
         texLogo = Texture("logo.png")
-        startRect = Rectangle(36f, 406f, 200f, 200f)
-        optionRect = Rectangle(500f, 406f, 200f, 200f)
-        aboutRect = Rectangle(275f, 250f, 200f, 200f)
-        logoRect = Rectangle(104f, 500f, 512f, 512f)
+        startRect = Rectangle(265f, 400f, 200f, 200f)
+        optionRect = Rectangle(500f, 246f, 200f, 200f)
+        aboutRect = Rectangle(265f, 100f, 200f, 200f)
+        scriptRect = Rectangle(36f, 246f, 200f, 200f)
+        logoRect = Rectangle(104f, 630f, 512f, 512f)
     }
 
     override fun render(delta: Float) {
@@ -61,6 +65,7 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
         game.batch.draw(texButtonStart, startRect.x, startRect.y, startRect.width, startRect.height)
         game.batch.draw(texButtonOption, optionRect.x, optionRect.y, optionRect.width, optionRect.height)
         game.batch.draw(texButtonAbout, aboutRect.x, aboutRect.y, aboutRect.width, aboutRect.height)
+        game.batch.draw(texButtonScript, scriptRect.x, scriptRect.y, scriptRect.width, scriptRect.height)
         game.batch.end()
 
     }
@@ -103,6 +108,11 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
             Gdx.input.setInputProcessor(null)
             dispose()
             //LabConverter().start("qqq");
+        }
+        if (scriptRect.contains(touchPos.x, touchPos.y)) {
+            game.screen = ScriptScreen(game)
+            Gdx.input.setInputProcessor(null)
+            dispose()
         }
         return false
     }
