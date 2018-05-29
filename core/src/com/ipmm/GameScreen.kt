@@ -54,7 +54,7 @@ enum class GameTexture {
     WALL, APPLE, GIRAFFEHEAD, NECK_NS , NECK_WE , NECK_SE ,NECK_SW , NECK_NE ,NECK_NW , BLOCK_0, BLOCK_11,BLOCK_12,BLOCK_13,BLOCK_14,BLOCK_21,BLOCK_22,BLOCK_23,BLOCK_24,BLOCK_25,BLOCK_26,BLOCK_31,BLOCK_32,BLOCK_33,BLOCK_34,BLOCK_4, EXIT, HEAD_N, HEAD_W, HEAD_S, HEAD_E
 }
 
-class GameScreen(internal val game: MainActivity, internal val level : Int, internal val swap : Boolean) : Screen, InputProcessor {
+class GameScreen(internal val game: MainActivity, internal val level : Int, internal val swap : Boolean, var iActivity : AndroidActivity) : Screen, InputProcessor {
 
     internal var camera: OrthographicCamera
     internal var width = 720
@@ -318,6 +318,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
      * Отрисовка текста
      */
     fun drawText(){
+        game.Points = iActivity.getProperty("points").toInt()
         game.font.color.set(Color.BLACK)
         //отрисовка яблок, собранных на этом уровне
         game.font.getData().setScale(2f, 2f)
@@ -593,7 +594,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                     game.direction = RIGHT
                 }
                 if (buttonsRect.get(Button.BACK.ordinal).contains(touchPos.x, touchPos.y)) {
-                    game.screen = LevelScreen(game)
+                    game.screen = LevelScreen(game, iActivity)
                     Gdx.input.setInputProcessor(null) //фикс бага с невидимыми кнопками
                 }
             }
@@ -613,7 +614,7 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                 }
                 State.LOSE -> {
                     if (buttonsRect.get(Button.OK.ordinal).contains(touchPos.x, touchPos.y)) {
-                        game.screen = GameScreen(game, level, swap);
+                        game.screen = GameScreen(game, level, swap, iActivity);
                         Gdx.input.setInputProcessor(null)
                     }
                 }
@@ -621,9 +622,11 @@ class GameScreen(internal val game: MainActivity, internal val level : Int, inte
                     if (buttonsRect.get(Button.OK.ordinal).contains(touchPos.x, touchPos.y)) {
                         game.Points += points
                         game.winLevel = level + 1
+                        iActivity.addProperty("winLevel", game.winLevel.toString())
+                        iActivity.addProperty("points", game.Points.toString())
                         if(level < 2)
-                            game.screen = GameScreen(game, level + 1, swap);
-                        else game.screen = LevelScreen(game);
+                            game.screen = GameScreen(game, level + 1, swap, iActivity);
+                        else game.screen = LevelScreen(game, iActivity);
                         Gdx.input.setInputProcessor(null)
                     }
                 }

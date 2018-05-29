@@ -19,7 +19,7 @@ import com.badlogic.gdx.Gdx
  * Created by Oleg on 17.03.2018.
  */
 
-class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.GestureListener, InputProcessor {
+class MainMenuScreen(internal val game: MainActivity, iActivity: AndroidActivity) : Screen, GestureDetector.GestureListener, InputProcessor {
     internal var camera = OrthographicCamera()
     internal var texButtonStart: Texture
     internal var texButtonOption: Texture
@@ -33,7 +33,7 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
     internal var logoRect: Rectangle
     internal var width = 720
     internal var height = 1200
-
+    var activity = iActivity
 
     init {
         camera.setToOrtho(false, width.toFloat(), height.toFloat())
@@ -94,23 +94,23 @@ class MainMenuScreen(internal val game: MainActivity) : Screen, GestureDetector.
         touchPos.set(input.getX(0).toFloat(), input.getY(0).toFloat(), 0f)
         camera.unproject(touchPos) //важная функция для того, чтобы подгонять координаты приложения в разных телефонах
         if (startRect.contains(touchPos.x, touchPos.y)) {
-            game.screen = LevelScreen(game)
+            game.screen = LevelScreen(game, activity)
             Gdx.input.setInputProcessor(null)
             dispose()
         }
         if (optionRect.contains(touchPos.x, touchPos.y)) {
-            game.screen = OptionScreen(game)
+            game.screen = OptionScreen(game, activity)
             Gdx.input.setInputProcessor(null)
             dispose()
         }
         if (aboutRect.contains(touchPos.x, touchPos.y)) {
-            game.screen = AboutScreen(game)
+            game.screen = AboutScreen(game, activity)
             Gdx.input.setInputProcessor(null)
             dispose()
             //LabConverter().start("qqq");
         }
         if (scriptRect.contains(touchPos.x, touchPos.y)) {
-            game.screen = ScriptScreen(game)
+            game.screen = ScriptScreen(game, activity)
             Gdx.input.setInputProcessor(null)
             dispose()
         }

@@ -12,7 +12,9 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 
-class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.GestureListener, InputProcessor {
+
+
+class LevelScreen(internal val game: MainActivity, iActivity : AndroidActivity): Screen, GestureDetector.GestureListener, InputProcessor{
     internal var camera = OrthographicCamera()
     internal var texButtonLevel1: Texture
     internal var texButtonLevel2: Texture
@@ -28,8 +30,10 @@ class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.Ges
     internal var logoRect: Rectangle
     internal var width = 720
     internal var height = 1200
+    var activity = iActivity
 
     init {
+
         camera.setToOrtho(false, width.toFloat(), height.toFloat())
 
         texButtonLevel1 = Texture("level1.png")
@@ -44,6 +48,9 @@ class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.Ges
         levelsRect = Rectangle(225f, 700f,250f,250f)
         logoRect = Rectangle(104f, 500f, 512f, 512f)
         rectBackButton = Rectangle(100f, height - 100f, 100f, 100f)
+
+        game.winLevel = activity.getProperty("winLevel").toInt()
+
     }
 
     override fun render(delta: Float) {
@@ -57,6 +64,7 @@ class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.Ges
 
         game.batch.begin()
         game.font.data.setScale(4f, 4f)
+        game.winLevel = activity.getProperty("winLevel").toInt()
         //game.batch.draw(texLogo, logoRect.x, logoRect.y, logoRect.width, logoRect.height)
         if (game.winLevel >= 1)
             texButtonLevel2 = Texture("level2.png")
@@ -70,6 +78,7 @@ class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.Ges
         game.batch.end()
 
     }
+
 
     override fun keyDown(keycode: Int): Boolean {
         if(keycode == Input.Keys.BACK){
@@ -95,22 +104,22 @@ class LevelScreen(internal val game: MainActivity) : Screen, GestureDetector.Ges
         touchPos.set(Gdx.input.getX(0).toFloat(), Gdx.input.getY(0).toFloat(), 0f)
         camera.unproject(touchPos) //важная функция для того, чтобы подгонять координаты приложения в разных телефонах
         if (rectBackButton.contains(touchPos.x, touchPos.y)) {
-            game.screen = MainMenuScreen(game)
+            game.screen = MainMenuScreen(game, activity)
         }
         if (level1Rect.contains(touchPos.x, touchPos.y)) {
-            var gs : GameScreen = GameScreen(game, 0, OptionScreen.settings.swap.not())
+            var gs : GameScreen = GameScreen(game, 0, OptionScreen.settings.swap.not(), activity)
             game.screen = gs
             Gdx.input.setInputProcessor(null)
             dispose()
         }
         if (level2Rect.contains(touchPos.x, touchPos.y) && game.winLevel >= 2) {
-            var gs : GameScreen = GameScreen(game, 2, OptionScreen.settings.swap.not())
+            var gs : GameScreen = GameScreen(game, 2, OptionScreen.settings.swap.not(), activity)
             game.screen = gs
             Gdx.input.setInputProcessor(null)
             dispose()
         }
         if (level3Rect.contains(touchPos.x, touchPos.y) && game.winLevel >= 1) {
-            var gs : GameScreen = GameScreen(game, 1, OptionScreen.settings.swap.not())
+            var gs : GameScreen = GameScreen(game, 1, OptionScreen.settings.swap.not(), activity)
             game.screen = gs
             Gdx.input.setInputProcessor(null)
             dispose()

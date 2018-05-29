@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector3
  * Created by Oleg on 11.03.2018.
  */
 
-class OptionScreen(internal val game: MainActivity) : Screen, InputProcessor {
+class OptionScreen(internal val game: MainActivity, var iActivity : AndroidActivity) : Screen, InputProcessor {
     internal var camera: OrthographicCamera
     internal var width = 720
     internal var height = 1200
@@ -154,7 +154,7 @@ class OptionScreen(internal val game: MainActivity) : Screen, InputProcessor {
             touchPos.set(Gdx.input.getX(0).toFloat(), Gdx.input.getY(0).toFloat(), 0f)
             camera.unproject(touchPos) //важная функция для того, чтобы подгонять координаты приложения в разных телефонах
             if (rectBackButton.contains(touchPos.x, touchPos.y)) {
-                game.screen = MainMenuScreen(game)
+                game.screen = MainMenuScreen(game, iActivity)
                 Gdx.input.setInputProcessor(null)
             }
             if (is_action_control && rectControl.contains(touchPos.x, touchPos.y)) {

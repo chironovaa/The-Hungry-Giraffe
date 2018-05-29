@@ -9,14 +9,14 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
 
-class AboutScreen(internal val game: MainActivity) : Screen, InputProcessor {
+class AboutScreen(internal val game: MainActivity, iActivity : AndroidActivity) : Screen, InputProcessor {
     private val camera: OrthographicCamera = OrthographicCamera()
     private val width = 720
     private val height = 1200
     private lateinit var textWall: Texture
     private lateinit var textBackButton: Texture
     private lateinit var rectBackButton: Rectangle
-
+    var activity = iActivity
     init {
         camera.setToOrtho(false, width.toFloat(), height.toFloat())
 
@@ -57,7 +57,7 @@ class AboutScreen(internal val game: MainActivity) : Screen, InputProcessor {
             touchPos.set(input.getX(0).toFloat(), input.getY(0).toFloat(), 0f)
             camera.unproject(touchPos)
             if (rectBackButton.contains(touchPos.x, touchPos.y)) {
-                game.screen = MainMenuScreen(game)
+                game.screen = MainMenuScreen(game, activity)
             }
         }
     }
